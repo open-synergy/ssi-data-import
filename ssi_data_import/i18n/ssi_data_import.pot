@@ -1,0 +1,928 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ssi_data_import
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_common.py:0
+#, python-format
+msgid ""
+"%(field_label)s: segment '%(segment)s' does not exist on model '%(model)s'."
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_common.py:0
+#, python-format
+msgid ""
+"%(field_label)s: segment '%(segment)s' on model '%(model)s' is not a "
+"relational field, so the path cannot continue further."
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Action"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__action_type
+msgid "Action Type"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__action_ids
+msgid "Actions"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__active
+msgid "Active"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__m2m_mode__add
+msgid "Add"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_format__csv
+msgid "CSV / Delimited Text"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__action_ids
+msgid "Changes applied to the matched (or newly created) Target Model record."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__file_encoding
+msgid "Character encoding of the source file. Ignored for Excel formats."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__quotechar
+msgid ""
+"Character used to quote fields containing special characters. Ignored for "
+"Excel formats."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__no_header
+msgid ""
+"Check if the file does not contain a header row. When checked, use the "
+"column index (0-based) instead of the column name in the Matcher and Action "
+"tabs below."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__code
+msgid "Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__column
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__column
+msgid "Column"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__offset_column
+msgid "Column Offset"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__column
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__column
+msgid ""
+"Column name (or 0-based index when No Header Line is checked on the "
+"Template) read from the source file row."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.ui.menu,name:ssi_data_import.menu_data_import_configuration
+msgid "Configuration"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_no_match__create
+msgid "Create Record"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_vals_code
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Create Values Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__create_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__create_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.module.category,name:ssi_data_import.data_import_module_category
+#: model:ir.ui.menu,name:ssi_data_import.menu_root_data_import
+msgid "Data Import"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.module.category,name:ssi_data_import.data_import_configurator_module_category
+msgid "Data Import - Configurator"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_data_import_template
+#: model:res.groups,name:ssi_data_import.data_import_template_group
+msgid "Data Import Template"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_data_import_template_action
+msgid "Data Import Template - Action"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_data_import_template_matcher
+msgid "Data Import Template - Matcher"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__template_id
+msgid "Data Import Template this action rule belongs to."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__template_id
+msgid "Data Import Template this matcher rule belongs to."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.actions.act_window,name:ssi_data_import.data_import_template_action
+#: model:ir.ui.menu,name:ssi_data_import.data_import_template_menu
+msgid "Data Import Templates"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__delimiter
+msgid "Delimiter"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__sequence
+msgid ""
+"Determines the order the matcher rules are combined in and, when several "
+"rules read the same source column, the order they are listed in the tab."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__operator
+msgid ""
+"Domain operator used to compare Field Path against the value resolved by "
+"Value Code."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__field_path
+msgid ""
+"Dot-separated path, starting from the Template's Target Model, of the field "
+"compared against Value Code (e.g. 'partner_id.vat'). Free text rather than a"
+" field picker because it must be able to traverse relations that no single "
+"field record represents."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__target_path
+msgid ""
+"Dot-separated path, starting from the Template's Target Model, of the record"
+" this rule is ultimately applied to (e.g. 'partner_id' to act on the matched"
+" record's partner instead of the record itself). Free text rather than a "
+"field picker because it must be able to traverse relations that no single "
+"field record represents. Leave empty to act on the matched record directly."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__file_encoding
+msgid "Encoding"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_multi_match__error
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_no_match__error
+msgid "Error"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_format__xls
+msgid "Excel (.xls)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_format__xlsx
+msgid "Excel (.xlsx)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__field_name
+msgid "Field Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__field_path
+msgid "Field Path"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__delimiter
+msgid "Field delimiter used in the source file. Ignored for Excel formats."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__file_format
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "File Format"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_channel_ids
+msgid "Followers (Channels)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__file_format
+msgid ""
+"Format of the source file to be imported.\n"
+"- CSV / Delimited Text: parsed using Encoding, Delimiter and Text Qualifier below.\n"
+"- Excel (.xlsx): parsed with openpyxl, worksheet chosen with Sheet Selector below.\n"
+"- Excel (.xls): parsed with xlrd, worksheet chosen with Sheet Selector below."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__m2m_mode
+msgid "How Value Code is applied to Field Name. Used by Many2many Set."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__action_type
+msgid ""
+"How this rule is applied to the matched record:\n"
+"- Write Field: writes Value Code to Field Name.\n"
+"- One2many Upsert: creates or updates a line in Field Name, matched by Key Code, with Vals Code.\n"
+"- Many2many Set: adds/removes/replaces Field Name using M2m Mode and Value Code.\n"
+"- Python Code: runs Python Code directly."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__sheet_selector
+msgid ""
+"How to pick the worksheet when File Format is an Excel format. Index picks "
+"the 0-based worksheet position; Name picks the worksheet whose name matches "
+"Sheet Name below. Ignored for CSV / Delimited Text files."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__id
+msgid "ID"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__required
+msgid ""
+"If checked, a row with an empty value for Column is rejected instead of "
+"being matched with a partial rule."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_needaction
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_unread
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__skip_if_empty
+msgid ""
+"If checked, this rule is not applied at all when Column is empty for the "
+"current row, instead of writing an empty value."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__sheet_selector__index
+msgid "Index"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__key_code
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Key Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__write_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__write_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__write_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__write_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__m2m_mode
+msgid "M2m Mode"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_main_attachment_id
+msgid "Main Attachment"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__action_type__m2m_set
+msgid "Many2many Set"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__active
+msgid ""
+"Master data status\n"
+"\n"
+"* Inactive data can not be selected when creating new transaction\n"
+"* Transaction with inactive master data can still be viewed\n"
+"* Set master data as inactive if master data no longger needed,\n"
+"but master data already used on transaction"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__code
+msgid ""
+"Master data unique identifier.\n"
+"\n"
+"* Fill with '/' if You do not need unique identifier\n"
+"* Click 'Generate Code' button to automatically assign code.\n"
+"  Sequence template mush be set to perform this action\n"
+"  Only master data with '/' code will be assign automatic code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Matcher"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__matcher_ids
+msgid "Matchers"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__name
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__sheet_selector__name
+msgid "Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__sheet_name
+msgid ""
+"Name of the worksheet to read when Sheet Selector = Name. Ignored when Sheet"
+" Selector = Index or File Format = CSV."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__no_header
+msgid "No Header Line"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__note
+msgid "Note"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__offset_column
+msgid "Number of columns to skip from the left before parsing starts."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__offset_row
+msgid "Number of rows to skip from the top before parsing starts."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_unread_counter
+msgid "Number of unread messages"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__model_id
+msgid "Odoo model that imported rows are matched and written against."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__on_multi_match
+msgid "On Multiple Matches"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__on_no_match
+msgid "On No Match"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__action_type__o2m_upsert
+msgid "One2many Upsert"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__operator
+msgid "Operator"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__sequence
+msgid "Order the action rules are applied in."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__python_code
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__action_type__python
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Python Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__create_vals_code
+msgid ""
+"Python expression that resolves to a dict of values used to create a new Target Model record when On No Match = Create Record. Available variables:\n"
+"  - env, document, time, datetime, dateutil, timezone, float_compare, b64encode, b64decode\n"
+"  - row: dict of the current file row, keyed by column"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__vals_code
+msgid ""
+"Python expression that resolves to a dict of values written to the One2many "
+"line found (or created) by Key Code. Used by One2many Upsert. Same available"
+" variables as Value Code."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_matcher__value_code
+msgid ""
+"Python expression that resolves to the value compared against Field Path. Available variables:\n"
+"  - env, document, time, datetime, dateutil, timezone, float_compare, b64encode, b64decode\n"
+"  - row: dict of the current file row, keyed by column\n"
+"  - value: raw value of Column in the current row"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__key_code
+msgid ""
+"Python expression that resolves to the value used, together with Relation "
+"Field, to find an existing One2many line to update instead of creating a "
+"duplicate. Used by One2many Upsert. Same available variables as Value Code."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__value_code
+msgid ""
+"Python expression that resolves to the value written by Write Field, or added/removed/replaced by Many2many Set. Available variables:\n"
+"  - env, document, time, datetime, dateutil, timezone, float_compare, b64encode, b64decode\n"
+"  - row: dict of the current file row, keyed by column\n"
+"  - value: raw value of Column in the current row"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__python_code
+msgid ""
+"Python statements run directly against the matched record. Used by Python Code. Available variables:\n"
+"  - env, document, time, datetime, dateutil, timezone, float_compare, b64encode, b64decode\n"
+"  - row: dict of the current file row, keyed by column"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__relation_field
+msgid "Relation Field"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__m2m_mode__remove
+msgid "Remove"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__m2m_mode__replace
+msgid "Replace"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__required
+msgid "Required"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__offset_row
+msgid "Row Offset"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__matcher_ids
+msgid ""
+"Rules used to find the existing Target Model record a file row corresponds "
+"to."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__sequence
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__sheet_name
+msgid "Sheet Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__sheet_selector
+msgid "Sheet Selector"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__skip_empty_lines
+msgid "Skip Empty Lines"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__skip_if_empty
+msgid "Skip If Empty"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_no_match__skip
+msgid "Skip Row"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__skip_empty_lines
+msgid "Skip blank rows when parsing the file."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Target"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__model_id
+msgid "Target Model"
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_template.py:0
+#, python-format
+msgid ""
+"Target Model '%s' is a wizard (transient) model and cannot be used as a data"
+" import target."
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_template.py:0
+#, python-format
+msgid ""
+"Target Model '%s' is an abstract model and cannot be used as a data import "
+"target."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__model_name
+msgid "Target Model Technical Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__target_path
+msgid "Target Path"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__model_name
+msgid ""
+"Technical name of the Target Model, kept in sync for use in domains and the "
+"code fields below."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__relation_field
+msgid ""
+"Technical name of the field on the One2many/Many2many comodel used together "
+"with Key Code to find an existing line to update instead of creating a "
+"duplicate. Used by One2many Upsert."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__field_name
+msgid ""
+"Technical name of the field written on the resolved Target Path (or on the "
+"matched record when Target Path is empty). Used by Write Field, One2many "
+"Upsert and Many2many Set."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__template_id
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__template_id
+msgid "Template"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__quotechar
+msgid "Text Qualifier"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__utf-16
+msgid "UTF-16"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__utf-16-sig
+msgid "UTF-16 (with BOM)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__utf-8
+msgid "UTF-8"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__utf-8-sig
+msgid "UTF-8 (with BOM)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_unread
+msgid "Unread Messages"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_multi_match__update_all
+msgid "Update All Matches"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_multi_match__first
+msgid "Use First Match"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__vals_code
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Vals Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__value_code
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__value_code
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
+msgid "Value Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__iso-8859-1
+msgid "Western (Latin-1 / ISO 8859-1)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__windows-1252
+msgid "Western (Windows-1252)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__on_multi_match
+msgid ""
+"What to do with a row when more than one existing Target Model record "
+"satisfies the Matcher rules below: Error stops the import, Use First Match "
+"applies the Action rules to the first match only, Update All Matches applies"
+" them to every match."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__on_no_match
+msgid ""
+"What to do with a row when no existing Target Model record satisfies the "
+"Matcher rules below: Error stops the import, Skip Row ignores the row, "
+"Create Record creates a new record using Create Values Code instead."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_action__action_type__write
+msgid "Write Field"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__delimiter__comma
+msgid "comma (,)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_matcher__operator__ilike
+msgid "contains"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template_matcher__operator__in
+msgid "in"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__delimiter__pipe
+msgid "pipe (|)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__delimiter__semicolon
+msgid "semicolon (;)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__delimiter__space
+msgid "space"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__delimiter__tab
+msgid "tab"
+msgstr ""
