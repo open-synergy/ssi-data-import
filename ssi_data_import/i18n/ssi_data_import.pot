@@ -84,6 +84,12 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid "A Required matcher's Column is empty for this row."
+msgstr ""
+
+#. module: ssi_data_import
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
 msgid "Action"
 msgstr ""
@@ -358,6 +364,11 @@ msgid "Conflict"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__conflict_data_id
+msgid "Conflicting Line"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_no_match__create
 msgid "Create Record"
 msgstr ""
@@ -474,6 +485,11 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__date_format
 msgid "Date Format"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__resolved_date
+msgid "Date and time Resolve last completed on this document."
 msgstr ""
 
 #. module: ssi_data_import
@@ -753,6 +769,15 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__preview
+msgid ""
+"JSON object, filled by Resolve, mapping each configured Action's key to its "
+"{'before', 'after'} value pair. Permanent audit trail -- never cleared once "
+"this line reaches Done, since this module writes changes without keeping a "
+"rollback snapshot."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__key_code
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
 msgid "Key Code"
@@ -926,6 +951,13 @@ msgid "No Match"
 msgstr ""
 
 #. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid ""
+"No matching record found; Template is configured to skip rows with no match."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__note
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__note
 msgid "Note"
@@ -1047,8 +1079,22 @@ msgid "Original file name of the uploaded Import File."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__conflict_data_id
+msgid ""
+"Other Data line -- in the same document -- that resolved to the same Target "
+"Model record first. Filled by Resolve when this line's state becomes "
+"Conflict."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__policy_template_id
 msgid "Policy Template"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__preview
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Preview"
 msgstr ""
 
 #. module: ssi_data_import
@@ -1182,6 +1228,16 @@ msgid "Required"
 msgstr ""
 
 #. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Resolve"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__resolved_date
+msgid "Resolved Date"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__user_id
 msgid "Responsible"
 msgstr ""
@@ -1235,6 +1291,14 @@ msgstr ""
 msgid ""
 "Rules used to find the existing Target Model record a file row corresponds "
 "to."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__value_hash
+msgid ""
+"SHA-256 fingerprint of every 'before' value in Preview, sorted by Preview "
+"key. Recomputed on every Resolve; meant to be re-checked when this line is "
+"applied, to detect that the Target Model record changed since."
 msgstr ""
 
 #. module: ssi_data_import
@@ -1363,6 +1427,13 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__target_path
 msgid "Target Path"
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid ""
+"Target record was already updated by a Done line on another document (%s)."
 msgstr ""
 
 #. module: ssi_data_import
@@ -1568,6 +1639,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__value_code
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
 msgid "Value Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__value_hash
+msgid "Value Hash"
 msgstr ""
 
 #. module: ssi_data_import
