@@ -69,7 +69,7 @@
                 <field name="model_id" invisible="1" />
                 <field name="model_name" invisible="1" />
             </xpath>
-            <xpath expr="//div[@name='button_box']" position="after">
+            <xpath expr="//group[@name='header']" position="after">
                 <div
                         class="alert alert-warning"
                         role="alert"
