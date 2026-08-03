@@ -1,0 +1,40 @@
+# Caller tipis untuk reusable workflow `andhit-r/notify-telegram`.
+#
+# Seluruh logika notifikasi ada di hulu; berkas ini sengaja tidak memuat apa pun selain
+# trigger + pemanggilan, supaya perbaikan di hulu menyebar tanpa menyentuh repo modul.
+# JANGAN menyalin kembali logika inline ke sini — itu persis kebiasaan yang membuat satu
+# bug ikut tersalin ke 130 repo: Telegram menolak pesan lebih dari 4096 karakter dengan
+# `400 message is too long`, sehingga seluruh run CI jadi merah.
+#
+# Nilai branch di bawah diisi apply-ssi-overrides.sh sesuai versi repo (14.0, 19.0, …).
+# Placeholder-nya sengaja TIDAK disebut di komentar mana pun: substitusinya `sed` polos,
+# jadi penyebutan di komentar ikut tertimpa dan kalimatnya berubah jadi tak bermakna.
+#
+# Repo hulu bersifat PUBLIK, jadi repo di org mana pun — termasuk `open-synergy` — boleh
+# MEMANGGIL-nya; reusable workflow privat hanya bisa dipanggil repo milik owner yang sama.
+#
+# TAPI IZIN MEMANGGIL DAN PEWARISAN SECRET ADALAH DUA ATURAN BERBEDA. `secrets: inherit`
+# hanya bekerja bila pemanggil dan reusable workflow berada di organisasi/enterprise yang
+# SAMA. Repo `open-synergy/*` memanggil workflow milik user `andhit-r` — beda owner —
+# sehingga `inherit` TIDAK meneruskan secret org dan seluruh run gagal SEBELUM job jalan:
+#   Error when evaluating 'secrets'. ...
+#   Secret TELEGRAM_CODE_BOT_TOKEN is required, but not provided while calling.
+# Karena itu kedua secret DITERUSKAN EKSPLISIT di bawah: ekspresi `${{ secrets.* }}`
+# dievaluasi di konteks pemanggil, jadi secret level repo MAUPUN level org sama-sama
+# terbaca, lintas owner sekalipun. JANGAN kembalikan ke `secrets: inherit`.
+#
+# Secret yang wajib tersedia bagi repo modul (level repo ATAU level org):
+# TELEGRAM_CODE_BOT_TOKEN, TELEGRAM_CHAT_ID.
+name: Notify Telegram on Push
+
+on:
+  push:
+    branches:
+      - 14.0
+
+jobs:
+  notify:
+    uses: andhit-r/notify-telegram/.github/workflows/notify.yml@v1
+    secrets:
+      TELEGRAM_CODE_BOT_TOKEN: ${{ secrets.TELEGRAM_CODE_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
