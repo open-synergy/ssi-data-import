@@ -4,7 +4,7 @@
 # pylint: disable=C8101
 {
     "name": "Data Import",
-    "version": "14.0.1.4.0",
+    "version": "14.0.1.5.0",
     "website": "https://simetri-sinergi.id",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "contributors": [
