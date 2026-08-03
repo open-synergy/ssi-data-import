@@ -17,7 +17,11 @@ Impor data dari berkas xlsx/csv/txt untuk memperbarui record pada model apa pun
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[ssi_data_import](ssi_data_import/) | 14.0.1.1.0 |  | Data Import
 
 [//]: # (end addons)
 
