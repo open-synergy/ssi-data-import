@@ -64,6 +64,10 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -155,6 +159,10 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
       - step: "Simulate another process changing the target after Resolve"
         action: "write"
         target: "partner"
@@ -260,6 +268,10 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously, and fails)"
         action: "call"
         target: "document"
@@ -305,7 +317,7 @@ scenarios:
         save_as: "partner"
         values:
           name: "Apply Partner Four"
-          vat: "APPLYV004"
+          ref: "APPLYREF004"
       - step: "Create first existing Invoice contact"
         action: "create"
         model: "res.partner"
@@ -335,8 +347,8 @@ scenarios:
           matcher_ids:
             - - 0
               - 0
-              - field_path: "vat"
-                column: "vat"
+              - field_path: "ref"
+                column: "ref"
                 operator: "="
                 required: true
           action_ids:
@@ -362,7 +374,7 @@ scenarios:
         values:
           import_id: "REC: document.id"
           sequence: 10
-          data: '{"vat": "APPLYV004", "child_name": "Updated Invoice Contact"}'
+          data: '{"ref": "APPLYREF004", "child_name": "Updated Invoice Contact"}'
       - step: "Resolve"
         action: "call"
         target: "document"
@@ -372,6 +384,10 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously, and fails)"
         action: "call"
         target: "document"
@@ -449,6 +465,10 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"

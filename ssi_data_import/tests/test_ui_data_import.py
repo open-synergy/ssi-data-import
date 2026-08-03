@@ -94,7 +94,17 @@ class TestUiDataImport(HttpSavepointCase):
         )
         cancel_document_as_admin = cancel_document.with_user(admin_user)
         cancel_document_as_admin.action_confirm()
-        cancel_document_as_admin.action_approve_approval()
+        # approve_ok is a non-stored compute that only depends on
+        # policy_template_id (see mixin.policy._compute_policy) --
+        # not on the approval_ids that action_confirm() just created
+        # -- so its cached (pre-confirm, False) value must be
+        # invalidated here or action_approve_approval() below raises
+        # "Document is not allowed to approve" even though admin is a
+        # genuine approver.
+        cancel_document_as_admin.invalidate_cache()
+        cancel_document_as_admin.with_context(
+            queue_job__no_delay=True
+        ).action_approve_approval()
         cls.env["base.cancel_reason"].sudo().create(
             {
                 "name": "Tour Cancel Reason",

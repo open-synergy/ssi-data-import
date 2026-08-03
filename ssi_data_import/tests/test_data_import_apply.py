@@ -38,8 +38,16 @@ class TestDataImportApply(YamlTransactionCase):
                         0,
                         0,
                         {
-                            "field_path": "vat",
-                            "column": "vat",
+                            # "ref" -- not "vat" -- because Odoo's
+                            # commercial-fields sync
+                            # (res.partner._commercial_fields())
+                            # copies "vat" from a partner down to
+                            # every non-company child created under
+                            # it, which would make this matcher find
+                            # more than one record once a child
+                            # exists.
+                            "field_path": "ref",
+                            "column": "ref",
                             "operator": "=",
                             "required": True,
                         },
@@ -70,7 +78,7 @@ class TestDataImportApply(YamlTransactionCase):
         ``name``/``type`` can only be read back in Python.
         """
         partner = self.env["res.partner"].create(
-            {"name": "O2M Upsert Partner One", "vat": "O2MV001"}
+            {"name": "O2M Upsert Partner One", "ref": "O2MREF001"}
         )
         self.assertFalse(partner.child_ids)
         line = self._create_template_and_line(
@@ -83,7 +91,7 @@ class TestDataImportApply(YamlTransactionCase):
                 "key_code": "'invoice'",
                 "vals_code": "{'name': value, 'type': 'invoice'}",
             },
-            {"vat": "O2MV001", "child_name": "New Invoice Contact"},
+            {"ref": "O2MREF001", "child_name": "New Invoice Contact"},
         )
         line._apply()
         self.assertEqual(line.state, "done")
@@ -99,7 +107,7 @@ class TestDataImportApply(YamlTransactionCase):
         count stayed at one *and* its name changed needs Python.
         """
         partner = self.env["res.partner"].create(
-            {"name": "O2M Upsert Partner Two", "vat": "O2MV002"}
+            {"name": "O2M Upsert Partner Two", "ref": "O2MREF002"}
         )
         existing_child = self.env["res.partner"].create(
             {
@@ -118,7 +126,7 @@ class TestDataImportApply(YamlTransactionCase):
                 "key_code": "'invoice'",
                 "vals_code": "{'name': value, 'type': 'invoice'}",
             },
-            {"vat": "O2MV002", "child_name": "Renamed Invoice Contact"},
+            {"ref": "O2MREF002", "child_name": "Renamed Invoice Contact"},
         )
         line._apply()
         self.assertEqual(line.state, "done")
