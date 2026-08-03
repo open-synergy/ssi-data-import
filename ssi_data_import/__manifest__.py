@@ -22,6 +22,7 @@
         "ssi_transaction_queue_cancel_mixin",
         "ssi_source_document_mixin",
         "queue_job_batch",
+        "ssi_web_widget_json",
     ],
     "data": [
         "security/ir_module_category_data.xml",

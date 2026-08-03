@@ -104,8 +104,27 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
                 extra_trigger: ".o_form_view.o_form_readonly",
             },
 
-            // Post-Condition — the document is unaffected by Load Data
-            // with no Import File uploaded: it stays in Draft.
+            // Flow 6 — Click Resolve
+            {
+                content: "Click Resolve",
+                trigger: "button[name='action_resolve']:enabled",
+                extra_trigger: ".o_form_view.o_form_readonly",
+            },
+
+            // Gerbang: Resolved Date is only filled once action_resolve()
+            // has actually run and written to the record -- unlike the
+            // Load Data click above, this is a genuine post-click signal.
+            {
+                content: "Resolve completed (Resolved Date is filled)",
+                trigger: ".o_field_widget[name='resolved_date']:not(:empty)",
+                run: function () {
+                    // Assertion only; do not trigger the default click action.
+                },
+            },
+
+            // Post-Condition — the document is unaffected by Load Data or
+            // Resolve with no Import File uploaded (zero Data lines to
+            // resolve): it stays in Draft.
             {
                 content: "Status is still Draft",
                 trigger:

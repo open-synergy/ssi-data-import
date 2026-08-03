@@ -14,3 +14,7 @@ class TestDataImport(YamlTransactionCase):
     def test_data_import(self):
         """Run the CRUD and negative path scenarios for the document."""
         self.run_yaml_scenario("test_data_import.yaml")
+
+    def test_resolve(self):
+        """Run the Resolve and conflict-detection scenarios."""
+        self.run_yaml_scenario("test_data_import_resolve.yaml")

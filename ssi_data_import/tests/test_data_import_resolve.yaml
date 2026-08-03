@@ -1,0 +1,411 @@
+scenarios:
+  - name: "Resolve Matches A Single Partner"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Resolve Partner One"
+          vat: "RESOLVEV001"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template One"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "RESOLVEV001"}'
+      - step: "Run Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert line matched to the partner"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "matched"
+          source_document_res_id:
+            type: "value"
+            expected: "REC: partner.id"
+      - step: "Assert target partner untouched"
+        action: "assert"
+        target: "partner"
+        asserts:
+          vat:
+            type: "value"
+            expected: "RESOLVEV001"
+          name:
+            type: "value"
+            expected: "Resolve Partner One"
+
+  - name: "Resolve Runs Idempotently"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Resolve Partner Two"
+          vat: "RESOLVEV002"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template Two"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "RESOLVEV002"}'
+      - step: "Run Resolve first time"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert matched after first run"
+        action: "assert"
+        target: "document"
+        asserts:
+          num_of_data:
+            type: "value"
+            expected: 1
+          num_of_matched:
+            type: "value"
+            expected: 1
+      - step: "Run Resolve second time"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert still matched, no duplicate lines"
+        action: "assert"
+        target: "document"
+        asserts:
+          num_of_data:
+            type: "value"
+            expected: 1
+          num_of_matched:
+            type: "value"
+            expected: 1
+      - step: "Assert line still matched to the same partner"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "matched"
+          source_document_res_id:
+            type: "value"
+            expected: "REC: partner.id"
+
+  - name: "No Match Row Stays No Match"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template Three"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line with unmatched vat"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "RESOLVEV003-MISSING"}'
+      - step: "Run Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert line has No Match"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "no_match"
+
+  - name: "Two Rows Same Target Become Conflict"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Resolve Partner Four"
+          vat: "RESOLVEV004"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template Four"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create first data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line_1"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "RESOLVEV004"}'
+      - step: "Create second data line, same target"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line_2"
+        values:
+          import_id: "REC: document.id"
+          sequence: 20
+          data: '{"vat": "RESOLVEV004"}'
+      - step: "Run Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert first line matched"
+        action: "assert"
+        target: "line_1"
+        asserts:
+          state:
+            type: "value"
+            expected: "matched"
+      - step: "Assert second line conflict, pointing at the first"
+        action: "assert"
+        target: "line_2"
+        asserts:
+          state:
+            type: "value"
+            expected: "conflict"
+          conflict_data_id:
+            type: "m2o"
+            expected: "REC: line_1"
+
+  - name: "Confirm Blocked By Conflict"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Resolve Partner Five"
+          vat: "RESOLVEV005"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template Five"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create first data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line_1"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "RESOLVEV005"}'
+      - step: "Create second data line, same target"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line_2"
+        values:
+          import_id: "REC: document.id"
+          sequence: 20
+          data: '{"vat": "RESOLVEV005"}'
+      - step: "Confirm must fail while a Conflict line exists"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "UserError"
+          message_contains: "Conflict"
+
+  - name: "Confirm Succeeds Despite No Match Row"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template Six"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line with unmatched vat"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "RESOLVEV006-MISSING"}'
+      - step: "Confirm must succeed"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+      - step: "Assert the No Match line was left alone"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "no_match"
+
+  - name: "Required Matcher Empty Column Becomes Error"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Resolve Template Seven"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line with empty vat column"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": ""}'
+      - step: "Run Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert line is Error"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "error"

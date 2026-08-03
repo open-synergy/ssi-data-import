@@ -78,6 +78,7 @@
                         widget="binary"
                         attrs="{'readonly': [('state','!=','draft')]}"
                     />
+                <field name="resolved_date" readonly="1" />
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page name="import_data" string="Import Data">
@@ -87,6 +88,14 @@
                             type="object"
                             class="oe_highlight"
                             icon="fa-upload"
+                            attrs="{'invisible':[('state','!=','draft')]}"
+                        />
+                    <button
+                            name="action_resolve"
+                            string="Resolve"
+                            type="object"
+                            class="oe_highlight"
+                            icon="fa-refresh"
                             attrs="{'invisible':[('state','!=','draft')]}"
                         />
                     <group name="import_data_counter" col="9">
@@ -101,23 +110,42 @@
                         <field name="num_of_done" />
                     </group>
                     <field name="data_ids">
-                        <tree>
+                        <tree
+                                decoration-danger="state in ('error','conflict','stale')"
+                                decoration-warning="state in ('no_match','multi_match')"
+                                decoration-success="state == 'done'"
+                                decoration-muted="state == 'ignored'"
+                            >
                             <field name="sequence" />
                             <field name="data" widget="json_viewer" />
-                            <field name="state" />
+                            <field name="state" widget="badge" />
                             <field name="source_document_id" />
+                            <field name="conflict_data_id" />
                         </tree>
                         <form>
                             <group>
                                 <group>
                                     <field name="sequence" />
-                                    <field name="state" />
+                                    <field name="state" widget="badge" />
                                     <field name="source_document_id" />
+                                    <field
+                                            name="conflict_data_id"
+                                            attrs="{'invisible': [('state','!=','conflict')]}"
+                                        />
+                                    <field name="value_hash" />
                                 </group>
                             </group>
                             <group string="Data">
                                 <field
                                         name="data"
+                                        widget="json_viewer"
+                                        nolabel="1"
+                                        colspan="2"
+                                    />
+                            </group>
+                            <group string="Preview">
+                                <field
+                                        name="preview"
                                         widget="json_viewer"
                                         nolabel="1"
                                         colspan="2"
