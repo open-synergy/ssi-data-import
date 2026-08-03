@@ -23,13 +23,14 @@ class TestUiDataImport(HttpSavepointCase):
         covered by the other test files instead.
         """
         super().setUpClass()
+        admin_user = cls.env.ref("base.user_admin")
         # Pre-Condition: the Data Imports menu is gated by the user
         # group. Without it the tour dies on its first step -- the
         # menu is never rendered. base.user_admin is already a member
         # via ssi_data_import.data_import_validator_group's security
         # data, but this stays explicit and harmless if that changes.
         cls.env.ref("ssi_data_import.data_import_user_group").sudo().write(
-            {"users": [(4, cls.env.ref("base.user_admin").id)]}
+            {"users": [(4, admin_user.id)]}
         )
         cls.env["data_import_template"].sudo().create(
             {
@@ -38,6 +39,14 @@ class TestUiDataImport(HttpSavepointCase):
                 "model_id": cls.env.ref("base.model_res_partner").id,
             }
         )
+
+        # Every data_import document below is created with sudo() --
+        # cls.env itself runs as SUPERUSER_ID, and the "Internal
+        # Users" ir.rule (security/ir_rule/data_import.xml) only
+        # shows a document to its own user_id. Without user_id
+        # explicitly set to admin here, these documents default
+        # user_id to SUPERUSER_ID and admin's tour would see an empty
+        # list at its very first "Open the record" step.
 
         # Pre-Condition for ssi_data_import_data_import_confirm: a Draft
         # document, untouched by the tour before Flow starts.
@@ -52,7 +61,9 @@ class TestUiDataImport(HttpSavepointCase):
                 }
             )
         )
-        cls.env["data_import"].sudo().create({"template_id": confirm_template.id})
+        cls.env["data_import"].sudo().create(
+            {"template_id": confirm_template.id, "user_id": admin_user.id}
+        )
 
         # Pre-Condition for ssi_data_import_data_import_approve: already
         # Waiting for Approval, built the same way patterns.md §E
@@ -69,9 +80,10 @@ class TestUiDataImport(HttpSavepointCase):
                 }
             )
         )
-        admin_user = cls.env.ref("base.user_admin")
         approve_document = (
-            cls.env["data_import"].sudo().create({"template_id": approve_template.id})
+            cls.env["data_import"]
+            .sudo()
+            .create({"template_id": approve_template.id, "user_id": admin_user.id})
         )
         approve_document.with_user(admin_user).action_confirm()
 
@@ -90,7 +102,9 @@ class TestUiDataImport(HttpSavepointCase):
             )
         )
         cancel_document = (
-            cls.env["data_import"].sudo().create({"template_id": cancel_template.id})
+            cls.env["data_import"]
+            .sudo()
+            .create({"template_id": cancel_template.id, "user_id": admin_user.id})
         )
         cancel_document_as_admin = cancel_document.with_user(admin_user)
         cancel_document_as_admin.action_confirm()
