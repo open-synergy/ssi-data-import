@@ -14,6 +14,61 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_conflict
+msgid "# Conflict"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_data
+msgid "# Data"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__name
+msgid "# Document"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_done
+msgid "# Done"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_error
+msgid "# Error"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_ignored
+msgid "# Ignored"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__import_id
+msgid "# Import"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_matched
+msgid "# Matched"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_multi_match
+msgid "# Multi Match"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_no_match
+msgid "# No Match"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_stale
+msgid "# Stale"
+msgstr ""
+
+#. module: ssi_data_import
 #: code:addons/ssi_data_import/models/data_import_common.py:0
 #, python-format
 msgid ""
@@ -34,6 +89,7 @@ msgid "Action"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_needaction
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_needaction
 msgid "Action Needed"
 msgstr ""
@@ -54,21 +110,40 @@ msgid "Active"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__active_approval_ids
+msgid "Active Approvals"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__active_approver_partner_ids
+msgid "Active Partners"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__active_approver_user_ids
+msgid "Active Users"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_ids
 msgid "Activities"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_exception_decoration
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_state
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_state
 msgid "Activity State"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_type_icon
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_type_icon
 msgid "Activity Type Icon"
 msgstr ""
@@ -79,6 +154,45 @@ msgid "Add"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:res.groups,name:ssi_data_import.data_import_all_group
+msgid "All"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__allowed_policy_template_ids
+msgid "Allowed Policy Templates"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__approval_template_id
+msgid "Approval Configuration"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__approval_template_id
+msgid "Approval Template"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__approval_ids
+msgid "Approvals"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__approve_ok
+msgid ""
+"Approve policy\n"
+"\n"
+"* If active user can see and execute 'Approve' button"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__approved
+msgid "Approved"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_attachment_count
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_attachment_count
 msgid "Attachment Count"
 msgstr ""
@@ -86,6 +200,69 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_format__csv
 msgid "CSV / Delimited Text"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__approve_ok
+msgid "Can Approve"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__cancel_ok
+msgid "Can Cancel"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__confirm_ok
+msgid "Can Confirm"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__done_ok
+msgid "Can Finished"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__manual_number_ok
+msgid "Can Input Manual Document Number"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__reject_ok
+msgid "Can Reject"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__restart_ok
+msgid "Can Restart"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__restart_approval_ok
+msgid "Can Restart Approval"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__queue_cancel_ok
+msgid "Can Start Cancel Queue"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__queue_done_ok
+msgid "Can Start Finished Queue"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__cancel_reason_id
+msgid "Cancel Reason"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__cancel_ok
+msgid ""
+"Cancel policy\n"
+"\n"
+"* If active user can see and execute 'Cancel' button"
 msgstr ""
 
 #. module: ssi_data_import
@@ -138,8 +315,46 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__company_id
+#: model:res.groups,name:ssi_data_import.data_import_company_group
+msgid "Company"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__company_partner_id
+msgid "Company Partner"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:res.groups,name:ssi_data_import.data_import_company_child_group
+msgid "Company and All Child Companies"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__company_id
+msgid ""
+"Company that own the document\n"
+"\n"
+"* Automatically filled with user's company.\n"
+"  Default company can be changed"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.ui.menu,name:ssi_data_import.menu_data_import_configuration
 msgid "Configuration"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__confirm_ok
+msgid ""
+"Confirm policy\n"
+"\n"
+"* If active user can see and execute 'Confirm' button"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__conflict
+msgid "Conflict"
 msgstr ""
 
 #. module: ssi_data_import
@@ -154,6 +369,8 @@ msgid "Create Values Code"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__create_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__create_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__create_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__create_uid
@@ -161,6 +378,8 @@ msgid "Created by"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__create_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__create_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__create_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__create_date
@@ -168,6 +387,14 @@ msgid "Created on"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__data_ids
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__data
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Data"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_data_import
 #: model:ir.module.category,name:ssi_data_import.data_import_module_category
 #: model:ir.ui.menu,name:ssi_data_import.menu_root_data_import
 msgid "Data Import"
@@ -176,6 +403,21 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.module.category,name:ssi_data_import.data_import_configurator_module_category
 msgid "Data Import - Configurator"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_data_import_data
+msgid "Data Import - Data"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.module.category,name:ssi_data_import.data_import_data_ownership_module_category
+msgid "Data Import - Data Ownership"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.module.category,name:ssi_data_import.data_import_workflow_module_category
+msgid "Data Import - Workflow"
 msgstr ""
 
 #. module: ssi_data_import
@@ -205,9 +447,38 @@ msgid "Data Import Template this matcher rule belongs to."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__template_id
+msgid ""
+"Data Import Template whose recipe is used to parse Import File: file format,"
+" offsets, and the Target Model below."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.actions.act_window,name:ssi_data_import.data_import_template_action
 #: model:ir.ui.menu,name:ssi_data_import.data_import_template_menu
 msgid "Data Import Templates"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.actions.act_window,name:ssi_data_import.data_import_action
+#: model:ir.ui.menu,name:ssi_data_import.data_import_menu
+msgid "Data Imports"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__date
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_search
+msgid "Date"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__date_format
+msgid "Date Format"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__date
+msgid "Date of this import document."
 msgstr ""
 
 #. module: ssi_data_import
@@ -223,6 +494,8 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__display_name
@@ -234,6 +507,19 @@ msgstr ""
 msgid ""
 "Domain operator used to compare Field Path against the value resolved by "
 "Value Code."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__done
+msgid "Done"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__done_ok
+msgid ""
+"Done policy\n"
+"\n"
+"* If active user can see and execute 'Done' button"
 msgstr ""
 
 #. module: ssi_data_import
@@ -256,14 +542,31 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__file_encoding
 msgid "Encoding"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__error
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_multi_match__error
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__on_no_match__error
 msgid "Error"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__error_message
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Error Message"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__error_message
+msgid "Error details recorded when this line ends up in state Error."
 msgstr ""
 
 #. module: ssi_data_import
@@ -298,21 +601,35 @@ msgid "File Format"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__import_file_hash
+msgid "File Hash"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__import_file_name
+msgid "File Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_follower_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_follower_ids
 msgid "Followers"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_channel_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_channel_ids
 msgid "Followers (Channels)"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_partner_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_partner_ids
 msgid "Followers (Partners)"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__activity_type_icon
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
 msgstr ""
@@ -324,6 +641,11 @@ msgid ""
 "- CSV / Delimited Text: parsed using Encoding, Delimiter and Text Qualifier below.\n"
 "- Excel (.xlsx): parsed with openpyxl, worksheet chosen with Sheet Selector below.\n"
 "- Excel (.xls): parsed with xlrd, worksheet chosen with Sheet Selector below."
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_search
+msgid "Group By"
 msgstr ""
 
 #. module: ssi_data_import
@@ -350,6 +672,8 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__id
@@ -357,11 +681,13 @@ msgid "ID"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_exception_icon
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_exception_icon
 msgid "Icon"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__activity_exception_icon
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr ""
@@ -374,12 +700,15 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__message_needaction
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__message_unread
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_needaction
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_unread
 msgid "If checked, new messages require your attention."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__message_has_error
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_has_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
@@ -392,11 +721,33 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__ignore_reason
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Ignore Reason"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__ignored
+msgid "Ignored"
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Import Data"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__import_file
+msgid "Import File"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__sheet_selector__index
 msgid "Index"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_is_follower
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_is_follower
 msgid "Is Follower"
 msgstr ""
@@ -408,6 +759,8 @@ msgid "Key Code"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher____last_update
@@ -415,6 +768,8 @@ msgid "Last Modified on"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__write_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__write_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__write_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__write_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__write_uid
@@ -422,10 +777,17 @@ msgid "Last Updated by"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__write_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__write_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__write_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__write_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Load Data"
 msgstr ""
 
 #. module: ssi_data_import
@@ -434,8 +796,17 @@ msgid "M2m Mode"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_main_attachment_id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_main_attachment_id
 msgid "Main Attachment"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__manual_number_ok
+msgid ""
+"Manual number assignment policy\n"
+"\n"
+"* If active user can edit document number"
 msgstr ""
 
 #. module: ssi_data_import
@@ -466,6 +837,11 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__matched
+msgid "Matched"
+msgstr ""
+
+#. module: ssi_data_import
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
 msgid "Matcher"
 msgstr ""
@@ -476,16 +852,24 @@ msgid "Matchers"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_has_error
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_has_error
 msgid "Message Delivery error"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_ids
 msgid "Messages"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__multi_match
+msgid "Multiple Matches"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__my_activity_date_deadline
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr ""
@@ -504,18 +888,31 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__need_validation
+msgid "Need Validation"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_date_deadline
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_summary
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_summary
 msgid "Next Activity Summary"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_type_id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_type_id
 msgid "Next Activity Type"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__next_approval_ids
+msgid "Next Approvals"
 msgstr ""
 
 #. module: ssi_data_import
@@ -524,13 +921,60 @@ msgid "No Header Line"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__no_match
+msgid "No Match"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__note
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__note
 msgid "Note"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_needaction_counter
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_needaction_counter
 msgid "Number of Actions"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_conflict
+msgid "Number of Data lines currently in state Conflict."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_done
+msgid "Number of Data lines currently in state Done."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_error
+msgid "Number of Data lines currently in state Error."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_ignored
+msgid "Number of Data lines currently in state Ignored."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_matched
+msgid "Number of Data lines currently in state Matched."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_multi_match
+msgid "Number of Data lines currently in state Multiple Matches."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_no_match
+msgid "Number of Data lines currently in state No Match."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_stale
+msgid "Number of Data lines currently in state Stale."
 msgstr ""
 
 #. module: ssi_data_import
@@ -539,16 +983,19 @@ msgid "Number of columns to skip from the left before parsing starts."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_has_error_counter
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_has_error_counter
 msgid "Number of errors"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__message_needaction_counter
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_needaction_counter
 msgid "Number of messages which requires an action"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__message_has_error_counter
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr ""
@@ -559,6 +1006,7 @@ msgid "Number of rows to skip from the top before parsing starts."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__message_unread_counter
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__message_unread_counter
 msgid "Number of unread messages"
 msgstr ""
@@ -591,6 +1039,24 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__sequence
 msgid "Order the action rules are applied in."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__import_file_name
+msgid "Original file name of the uploaded Import File."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__policy_template_id
+msgid "Policy Template"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__state
+msgid ""
+"Processing state of this line. Only 'Draft' is produced by this module -- "
+"the remaining values are set by the matching, preview and apply features "
+"implemented by later modules."
 msgstr ""
 
 #. module: ssi_data_import
@@ -651,6 +1117,51 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__date_format
+msgid ""
+"Python strftime() format used to turn a date/datetime cell read from the "
+"source file into text before it is stored as JSON (e.g. '%Y-%m-%d'). Only "
+"used for cells that are an actual date/datetime value (as read by "
+"openpyxl/xlrd); ignored for CSV files, whose cells are already plain text."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__queue_job_id
+msgid "Queue Job"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__queue_job_id
+msgid "Queue job that processed this line, if any."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__data
+msgid ""
+"Raw row data read from Import File, stored as a JSON object keyed by column "
+"name (or 0-based column index when the Template's No Header Line is "
+"checked)."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__ignore_reason
+msgid "Reason recorded when this line is ignored instead of applied."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__reject_ok
+msgid ""
+"Reject policy\n"
+"\n"
+"* If active user can see and execute 'Reject' button"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__rejected
+msgid "Rejected"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__relation_field
 msgid "Relation Field"
 msgstr ""
@@ -671,13 +1182,52 @@ msgid "Required"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__user_id
+msgid "Responsible"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__activity_user_id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__activity_user_id
 msgid "Responsible User"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__restart_approval_ok
+msgid ""
+"Restart approval policy\n"
+"\n"
+"* If active user can see and execute 'Restart Approval' button"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__restart_ok
+msgid ""
+"Restart policy\n"
+"\n"
+"* If active user can see and execute 'Restart' button"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__reviewer_id
+msgid "Reviewer"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__offset_row
 msgid "Row Offset"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__sequence
+msgid "Row sequence from the source file."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__data_ids
+msgid ""
+"Rows read from Import File by Load Data, one record per source row. Rebuilt "
+"(not appended to) every time Load Data runs."
 msgstr ""
 
 #. module: ssi_data_import
@@ -688,6 +1238,14 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__import_file_hash
+msgid ""
+"SHA-256 hash of Import File's content, computed by Load Data and used to "
+"detect duplicate imports."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__sequence
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__sequence
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__sequence
 msgid "Sequence"
@@ -724,6 +1282,38 @@ msgid "Skip blank rows when parsing the file."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__source_document_id
+msgid "Source Document"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__source_document_model_id
+msgid "Source Document Model"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__source_document_model
+msgid "Source Document Model Technical Name"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__source_document_res_id
+msgid "Source Document Res ID"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_data__state__stale
+msgid "Stale"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__state
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__state
+msgid "State"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__activity_state
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_state
 msgid ""
 "Status based on activities\n"
@@ -738,6 +1328,7 @@ msgid "Target"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__model_id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__model_id
 msgid "Target Model"
 msgstr ""
@@ -759,13 +1350,26 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__model_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__model_name
 msgid "Target Model Technical Name"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__model_id
+msgid "Target Model configured on Template, kept in sync for reference."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__target_path
 msgid "Target Path"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__model_name
+msgid ""
+"Technical name of the Target Model configured on Template, kept in sync for "
+"reference."
 msgstr ""
 
 #. module: ssi_data_import
@@ -792,8 +1396,10 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__template_id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__template_id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__template_id
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_search
 msgid "Template"
 msgstr ""
 
@@ -803,6 +1409,75 @@ msgid "Text Qualifier"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_data__import_id
+msgid "The data_import document this line belongs to."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__import_file
+msgid "The source file to parse, in a format matching Template's File Format."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__cancel_queue_job_batch_id
+msgid "To Cancel Queue Job Batch"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__cancel_queue_job_batch_state
+msgid "To Cancel Queue Job Batch State"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__cancel_queue_job_ids
+msgid "To Cancel Queue Jobs"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__done_queue_job_batch_state
+msgid "To Done Queue Job Batch State"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__done_queue_job_batch_id
+msgid "To Done Queue Job Batche"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__done_queue_job_ids
+msgid "To Done Queue Jobs"
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_search
+msgid "Today"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_data
+msgid "Total number of Data lines."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__name
+msgid ""
+"Transaction/document number\n"
+"\n"
+"* Unique indentifer of transaction\n"
+"* Leave '/' to automatically generate number\n"
+"* Change '/' into any number/identifier to manually assign number.\n"
+"  Manual number assignment can be done in 'Draft' state\n"
+"  Only user with 'Can Manualy Assign Number' policy can manually assign number.\n"
+"* Transaction with number other than '/' can not be deleted."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.ui.menu,name:ssi_data_import.menu_data_import_transaction
+msgid "Transactions"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__activity_exception_decoration
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr ""
@@ -828,11 +1503,13 @@ msgid "UTF-8 (with BOM)"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_unread
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_unread
 msgid "Unread Messages"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_unread_counter
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_unread_counter
 msgid "Unread Messages Counter"
 msgstr ""
@@ -848,6 +1525,39 @@ msgid "Use First Match"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:res.groups,name:ssi_data_import.data_import_user_group
+msgid "User"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__user_id
+msgid ""
+"User that responsible for document\n"
+"\n"
+"* Create user can be different with responsible user\n"
+"* Automatically filled with user that initiate document creation.\n"
+"  Default responsible can be changed."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__reviewer_id
+msgid ""
+"User that responsible to review document\n"
+"\n"
+"* Unless it configured to approve reviewer does not equal to approver"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__active_approver_user_ids
+msgid "Users that can approve/reject document"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:res.groups,name:ssi_data_import.data_import_validator_group
+msgid "Validator"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__vals_code
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
 msgid "Vals Code"
@@ -858,6 +1568,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__value_code
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_template_view_form
 msgid "Value Code"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:res.groups,name:ssi_data_import.data_import_viewer_group
+msgid "Viewer"
 msgstr ""
 
 #. module: ssi_data_import
