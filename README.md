@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[ssi_data_import](ssi_data_import/) | 14.0.1.2.0 |  | Data Import
+[ssi_data_import](ssi_data_import/) | 14.0.1.3.0 |  | Data Import
 
 [//]: # (end addons)
 
