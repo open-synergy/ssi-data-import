@@ -125,10 +125,16 @@ class DataImport(models.Model):  # pylint: disable=too-few-public-methods
         ondelete="restrict",
         readonly=True,
         states={"draft": [("readonly", False)]},
+        domain=(
+            "[('model_name', '=', context.get('default_target_model_name'))"
+            " if context.get('default_target_model_name') else (1, '=', 1)]"
+        ),
         help=(
             "Data Import Template whose recipe is used to parse "
             "Import File: file format, offsets, and the Target Model "
-            "below."
+            "below. When this document is created from a Target "
+            "Model's Start Import contextual action, the choices are "
+            "pre-filtered to Templates targeting that model."
         ),
     )
     model_id = fields.Many2one(

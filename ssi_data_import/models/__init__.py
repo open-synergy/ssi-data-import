@@ -8,3 +8,4 @@ from . import data_import_template_matcher  # noqa: F401
 from . import data_import_template_action  # noqa: F401
 from . import data_import  # noqa: F401
 from . import data_import_data  # noqa: F401
+from . import ir_model  # noqa: F401
