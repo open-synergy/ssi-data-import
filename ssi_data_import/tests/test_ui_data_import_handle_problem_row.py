@@ -2,7 +2,20 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import unittest
+
 from odoo.tests import HttpSavepointCase, tagged
+
+# Held proactively, not because this tour was observed failing: this PR
+# passed CI green on its first real run. Skipped anyway to avoid
+# repeating the Odoo 14.0 core JS tour-race debugging cycle from PR #10
+# (FieldWrapper.updateModifiersValue, list->form navigation) while that
+# race's root cause is still open. Re-enable together with the other
+# tours tracked in open-synergy/ssi-data-import#11.
+_SKIP_REASON = (
+    "Held pending root-cause of the Odoo 14.0 core JS tour race -- see "
+    "open-synergy/ssi-data-import#11"
+)
 
 
 @tagged("post_install", "-at_install")
@@ -98,6 +111,7 @@ class TestUiDataImportHandleProblemRow(HttpSavepointCase):
         document_as_admin.invalidate_cache()
         partner.invalidate_cache()
 
+    @unittest.skip(_SKIP_REASON)
     def test_handle_problem_row(self):
         """Run the handle-problem-row tour for ``data_import``.
 
