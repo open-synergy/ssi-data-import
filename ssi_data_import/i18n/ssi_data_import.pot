@@ -84,6 +84,18 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid ""
+"<strong>Warning:</strong>\n"
+"                    Cancelling this document does\n"
+"                    <strong>not</strong>\n"
+"                    undo changes already applied to Target Model records.\n"
+"                    Data lines already in state\n"
+"                    <strong>Done</strong>\n"
+"                    keep their applied changes even after Cancel."
+msgstr ""
+
+#. module: ssi_data_import
 #: code:addons/ssi_data_import/models/data_import_data.py:0
 #, python-format
 msgid "A Required matcher's Column is empty for this row."
@@ -98,6 +110,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_needaction
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_needaction
 msgid "Action Needed"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:base.automation,name:ssi_data_import.data_import_done
+#: model:ir.actions.server,name:ssi_data_import.data_import_action_recompute_queue_done_result
+msgid "Action Recompute Queue Done Result"
 msgstr ""
 
 #. module: ssi_data_import
@@ -1148,18 +1166,24 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__value_code
 msgid ""
-"Python expression that resolves to the value written by Write Field, or added/removed/replaced by Many2many Set. Available variables:\n"
+"Python expression that resolves to the value written by Write Field, or added/removed/replaced by Many2many Set. Evaluated identically at Resolve (Preview) and Apply time. Available variables:\n"
 "  - env, document, time, datetime, dateutil, timezone, float_compare, b64encode, b64decode\n"
 "  - row: dict of the current file row, keyed by column\n"
-"  - value: raw value of Column in the current row"
+"  - value: raw value of Column in the current row\n"
+"  - record, target, line: only set while Apply runs -- referencing them fails at Resolve (Preview) time"
 msgstr ""
 
 #. module: ssi_data_import
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_template_action__python_code
 msgid ""
-"Python statements run directly against the matched record. Used by Python Code. Available variables:\n"
+"Python statements run directly against the matched record. Used by Python Code, only run at Apply time -- never evaluated for Preview. Available variables:\n"
 "  - env, document, time, datetime, dateutil, timezone, float_compare, b64encode, b64decode\n"
-"  - row: dict of the current file row, keyed by column"
+"  - row: dict of the current file row, keyed by column\n"
+"  - value: raw value of Column in the current row\n"
+"  - record: resolved Target Model record\n"
+"  - target: record resolved from Target Path\n"
+"  - line: the data_import.data line being applied\n"
+"  - result: available for consistency with other code fields, but not read back by Apply"
 msgstr ""
 
 #. module: ssi_data_import
@@ -1427,6 +1451,18 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__target_path
 msgid "Target Path"
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid "Target record changed since Resolve; re-run Resolve to continue."
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid "Target record no longer exists; re-run Resolve to continue."
 msgstr ""
 
 #. module: ssi_data_import
