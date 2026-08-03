@@ -52,7 +52,9 @@
      and refuses to overwrite the newer value. A Stale line is never produced by Resolve
      itself. To fix it: **Cancel** the document (see `10-cancel.md`), **Restart** it
      back to Draft, then run **Resolve** again — it re-evaluates every Stale (and Error)
-     line from scratch, leaving lines already Done untouched.
+     line from scratch, leaving lines already Done untouched. While still Queue To Done,
+     Edit, Retry, and Ignore on the row itself are a more direct alternative — see
+     `14-handle-problem-data.md`.
 
 ## Post-Condition
 

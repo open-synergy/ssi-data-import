@@ -6,9 +6,10 @@ import hashlib
 import json
 
 from odoo import _, fields, models
+from odoo.exceptions import UserError
 
 
-class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
+class DataImportData(models.Model):
     """
     One line per row read from a ``data_import`` document's Import
     File, storing the raw row as JSON. ``mixin.source_document``
@@ -23,6 +24,14 @@ class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
     Model -- gated by a staleness check against ``value_hash`` (state
     Stale on mismatch) and wrapped in a savepoint so a failure never
     leaves a partial write (state Error) nor stops the batch.
+
+    A line stuck in a problem state (Draft, Error, No Match, Multiple
+    Matches, Conflict or Stale) is never a dead end: ``action_retry``
+    re-runs Resolve/Apply for it alone, ``action_open_edit_wizard``
+    opens a dialog to fix its raw Data, and ``action_open_ignore_wizard``
+    records a Reason and skips it for good. Done and Ignored lines are
+    both terminal -- this module keeps no rollback, so neither is
+    ever reopened.
     """
 
     _name = "data_import.data"
@@ -461,3 +470,221 @@ class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
                 "error_message": False,
             }
         )
+
+    # -------------------------------------------------------------------
+    # Edit JSON, Ignore, and Retry -- opened from the row itself
+    # -------------------------------------------------------------------
+
+    def _check_actionable_state(self):
+        """Ensure this line can still be edited, ignored, or retried.
+
+        :raises UserError: when ``state`` is not one of
+            ``_resolvable_states`` -- Done and Ignored are both
+            terminal, and this module never reverts a change once
+            applied, so allowing Edit/Ignore/Retry there would
+            silently pretend to fix a line whose Target Model write
+            already happened (Done) or that was already skipped on
+            purpose (Ignored)
+        """
+        self.ensure_one()
+        if self.state not in self._resolvable_states:
+            error_message = """
+Context: Handling a problem Data line
+Database ID: %s
+Problem: Line is in state '%s' and cannot be edited, ignored, or retried
+Solution: Only Draft, Error, No Match, Multi Match, Conflict, Stale lines qualify
+""" % (
+                self.id,
+                self.state,
+            )
+            raise UserError(_(error_message))
+
+    def _check_json_object(self, raw):
+        """Validate ``raw`` parses to a JSON object (a dict).
+
+        :param raw: text typed by the user in the Edit JSON wizard
+        :raises UserError: when ``raw`` is not valid JSON, or parses
+            to something other than a JSON object (e.g. a list or a
+            scalar)
+        :return: the parsed ``dict``
+        """
+        self.ensure_one()
+        try:
+            parsed = json.loads(raw or "")
+        except (TypeError, ValueError) as error:
+            error_message = """
+Context: Editing a Data line's raw JSON
+Database ID: %s
+Problem: The text is not valid JSON
+Solution: Fix the JSON syntax and try again
+""" % (
+                self.id,
+            )
+            raise UserError(_(error_message)) from error
+        if not isinstance(parsed, dict):
+            error_message = """
+Context: Editing a Data line's raw JSON
+Database ID: %s
+Problem: The JSON must be an object (e.g. {"field": "value"}), not %s
+Solution: Wrap the value in a JSON object keyed by column name
+""" % (
+                self.id,
+                type(parsed).__name__,
+            )
+            raise UserError(_(error_message))
+        return parsed
+
+    def _edit_json(self, raw):
+        """Overwrite this line's raw Data and return it to Draft.
+
+        Called by the ``edit_data_import_row`` wizard's Confirm.
+        Never runs Resolve or Apply itself -- the user is expected to
+        click Retry afterwards to re-process the corrected row.
+
+        :param raw: JSON text typed by the user, validated to be a
+            JSON object by ``_check_json_object``
+        :return: nothing
+        """
+        self.ensure_one()
+        self._check_actionable_state()
+        parsed = self._check_json_object(raw)
+        self.write(
+            {
+                "data": json.dumps(parsed),
+                "state": "draft",
+                "error_message": False,
+            }
+        )
+
+    def _check_ignore_reason(self, reason):
+        """Validate ``reason`` is filled before ignoring a line.
+
+        :param reason: text typed by the user in the Ignore wizard
+        :raises UserError: when ``reason`` is empty -- Ignore is a
+            terminal, unrecoverable outcome (this module keeps no
+            rollback), so skipping the reason would erase the only
+            audit trail the feature leaves behind
+        """
+        if not (reason or "").strip():
+            error_message = """
+Context: Ignoring a Data line
+Problem: Reason is empty
+Solution: Explain why this line is being ignored before confirming
+"""
+            raise UserError(_(error_message))
+
+    def _ignore(self, reason):
+        """Mark this line Ignored with ``reason``.
+
+        Called by both the ``ignore_data_import_row`` wizard
+        (single line) and ``data_import._ignore_all_problem_data``
+        (bulk, one shared Reason). Since this settles the line
+        outside the queue's own Apply path, its orphaned queue job
+        (if any) is force-completed and the document is re-checked
+        for Done right after.
+
+        :param reason: text stored on ``ignore_reason``, already
+            validated non-empty by ``_check_ignore_reason``
+        :return: nothing
+        """
+        self.ensure_one()
+        self._check_actionable_state()
+        self._check_ignore_reason(reason)
+        self.write({"state": "ignored", "ignore_reason": reason})
+        self._finalize_terminal_state()
+        self.import_id._reevaluate_completion()
+
+    def _finalize_terminal_state(self):
+        """Force-complete this line's orphaned queue job, if any.
+
+        Safety net for Ignore and Retry: this line just left the
+        queue's own control (its outcome was decided by a direct
+        write or by a synchronous Retry, not by the queue job fanned
+        out for it), so a queue job still sitting in a non-terminal
+        state would otherwise leave the document's Done batch
+        (``done_queue_job_batch_id``) stuck forever, and the document
+        would never reach Done.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        job = self.queue_job_id
+        if job and job.state not in ("done", "failed", "cancelled"):
+            job.button_done()
+
+    def _retry(self):
+        """Reset this line to Draft, then re-run Resolve and Apply.
+
+        Unlike the queue-driven Apply started by
+        ``data_import._10_enqueue_data_apply_jobs``, this runs
+        synchronously and only for this single line -- meant for a
+        user fixing one problem line at a time, not for the initial
+        mass Apply.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        self._check_actionable_state()
+        self.write({"state": "draft", "error_message": False})
+        self._resolve(self.import_id.template_id)
+        if self.state == "matched":
+            self._apply()
+        if self.state in ("done", "ignored"):
+            self._finalize_terminal_state()
+        self.import_id._reevaluate_completion()
+
+    def action_open_edit_wizard(self):
+        """Open the Edit JSON wizard for this line.
+
+        :return: an ``ir.actions.act_window`` dict
+        """
+        for record in self.sudo():
+            result = record._open_edit_wizard()
+        return result
+
+    def _open_edit_wizard(self):
+        """Build the window action opening the Edit JSON wizard.
+
+        :return: an ``ir.actions.act_window`` dict, ``target`` "new",
+            pointing at ``edit_data_import_row``
+        """
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Edit Data"),
+            "res_model": "edit_data_import_row",
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def action_open_ignore_wizard(self):
+        """Open the Ignore wizard for this line.
+
+        :return: an ``ir.actions.act_window`` dict
+        """
+        for record in self.sudo():
+            result = record._open_ignore_wizard()
+        return result
+
+    def _open_ignore_wizard(self):
+        """Build the window action opening the Ignore wizard.
+
+        :return: an ``ir.actions.act_window`` dict, ``target`` "new",
+            pointing at ``ignore_data_import_row``
+        """
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Ignore Data Line"),
+            "res_model": "ignore_data_import_row",
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def action_retry(self):
+        """Reset this line to Draft and re-run Resolve/Apply for it.
+
+        :return: nothing
+        """
+        for record in self.sudo():
+            record._retry()

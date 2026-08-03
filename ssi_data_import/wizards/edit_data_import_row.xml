@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="edit_data_import_row_view_form" model="ir.ui.view">
+    <field name="name">edit_data_import_row - form</field>
+    <field name="model">edit_data_import_row</field>
+    <field name="arch" type="xml">
+        <form>
+            <field name="data_id" invisible="1" />
+            <group name="group_1" colspan="4" col="2">
+                <field name="data" widget="text" nolabel="1" colspan="2" />
+            </group>
+            <footer>
+                <button
+                        name="action_confirm"
+                        type="object"
+                        string="Save"
+                        class="btn-primary"
+                    />
+                <button string="Cancel" class="btn-default" special="cancel" />
+            </footer>
+        </form>
+    </field>
+</record>
+</odoo>

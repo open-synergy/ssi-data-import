@@ -1,0 +1,438 @@
+scenarios:
+  - name: "Edit Wizard Fixes Error Row And Returns It To Draft"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Handle Row Template One"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line with empty vat column"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": ""}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert line is Error"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "error"
+      - step: "Edit the row's JSON via the wizard"
+        action: "wizard"
+        model: "edit_data_import_row"
+        target: "line"
+        values:
+          data: '{"vat": "HANDLEV001"}'
+        method: "action_confirm"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          error_message:
+            type: "value"
+            operator: "is_falsy"
+
+  - name: "Edit Wizard Rejects Non-Object JSON"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Handle Row Template Two"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line with empty vat column"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": ""}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Edit with a JSON array instead of an object must fail"
+        action: "wizard"
+        model: "edit_data_import_row"
+        target: "line"
+        values:
+          data: '["not", "an", "object"]'
+        method: "action_confirm"
+        expect_error:
+          type: "UserError"
+
+  - name: "Ignore Wizard Marks No Match Row Ignored With Reason"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Handle Row Template Three"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line whose vat matches nothing"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "HANDLEV003"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert line is No Match"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "no_match"
+      - step: "Ignore the row via the wizard"
+        action: "wizard"
+        model: "ignore_data_import_row"
+        target: "line"
+        values:
+          reason: "Row reason text"
+        method: "action_confirm"
+        asserts:
+          state:
+            type: "value"
+            expected: "ignored"
+          ignore_reason:
+            type: "value"
+            expected: "Row reason text"
+
+  - name: "Ignore Wizard Rejects Empty Reason"
+    steps:
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Handle Row Template Four"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line whose vat matches nothing"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "HANDLEV004"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Ignore with an empty Reason must fail"
+        action: "wizard"
+        model: "ignore_data_import_row"
+        target: "line"
+        method: "action_confirm"
+        expect_error:
+          type: "UserError"
+
+  - name: "Ignore Wizard Rejects Done Row"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Handle Row Partner Five"
+          vat: "HANDLEV005"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Handle Row Template Five"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - action_type: "write"
+                field_name: "name"
+                column: "name"
+                value_code: "value"
+                skip_if_empty: false
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "HANDLEV005", "name": "Applied Name"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Approve (fan-out job runs synchronously)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert line reached Done"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+      - step: "Ignore a Done row must fail"
+        action: "wizard"
+        model: "ignore_data_import_row"
+        target: "line"
+        values:
+          reason: "Should not be allowed"
+        method: "action_confirm"
+        expect_error:
+          type: "UserError"
+
+  - name: "Ignore All Applies Shared Reason And Completes The Document"
+    steps:
+      - step: "Create first target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner_one"
+        values:
+          name: "Handle Row Partner Six"
+          vat: "HANDLEV006"
+      - step: "Create second target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner_two"
+        values:
+          name: "Handle Row Partner Seven"
+          vat: "HANDLEV007"
+      - step: "Create template with an always-failing Python action"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Handle Row Template Six"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - action_type: "python"
+                python_code: "raise ValueError('Deliberate failure for testing')"
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create first data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line_one"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "HANDLEV006"}'
+      - step: "Create second data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line_two"
+        values:
+          import_id: "REC: document.id"
+          sequence: 20
+          data: '{"vat": "HANDLEV007"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Approve (fan-out jobs run synchronously, and fail)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert both lines reached Error"
+        action: "assert"
+        target: "line_one"
+        asserts:
+          state:
+            type: "value"
+            expected: "error"
+      - step: "Assert second line also reached Error"
+        action: "assert"
+        target: "line_two"
+        asserts:
+          state:
+            type: "value"
+            expected: "error"
+      - step: "Assert document stays Queue To Done"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "queue_done"
+      - step: "Ignore every problem row with one shared reason"
+        action: "wizard"
+        model: "ignore_data_import_error"
+        target: "document"
+        values:
+          reason: "Bulk ignore reason"
+        method: "action_confirm"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+      - step: "Assert first line ignored with the shared reason"
+        action: "assert"
+        target: "line_one"
+        asserts:
+          state:
+            type: "value"
+            expected: "ignored"
+          ignore_reason:
+            type: "value"
+            expected: "Bulk ignore reason"
+      - step: "Assert second line ignored with the shared reason"
+        action: "assert"
+        target: "line_two"
+        asserts:
+          state:
+            type: "value"
+            expected: "ignored"
+          ignore_reason:
+            type: "value"
+            expected: "Bulk ignore reason"

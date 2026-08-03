@@ -36,6 +36,15 @@ class DataImport(models.Model):  # pylint: disable=too-few-public-methods
     Lifecycle: draft -> confirm -> queue_done -> done
     Cancellation: queue_cancel -> cancel (never touches Target Model
     records already written by Apply -- there is no rollback)
+
+    A document stuck at Queue To Done because of a problem line is
+    not a dead end: ``action_retry_all_problem_data`` and the
+    ``ignore_data_import_error`` wizard (opened by
+    ``action_open_ignore_all_wizard``) act on every problem line at
+    once, on top of each line's own Edit/Ignore/Retry buttons (see
+    ``data_import.data``). ``_reevaluate_completion`` lets the
+    document reach Done as soon as the last problem line settles,
+    without waiting for the queue batch's own recompute trigger.
     """
 
     _name = "data_import"
@@ -733,6 +742,101 @@ Solution: Review the Conflict lines in the Import Data tab and re-run Resolve"""
         self.ensure_one()
         blocking_states = ("draft", "matched", "error", "stale")
         return not self.data_ids.filtered(lambda d: d.state in blocking_states)
+
+    def _reevaluate_completion(self):
+        """Re-check whether this document can now reach Done.
+
+        Called after a Data line settles outside the queue's own
+        Apply path -- Edit+Retry, Ignore, or Ignore All -- so a
+        document blocked only by that line does not have to wait for
+        the queue batch's own recompute trigger
+        (``_recompute_queue_done_result``, fired by this module's
+        ``base.automation`` when the Done batch finishes).
+
+        :return: nothing
+        """
+        self.ensure_one()
+        if self.state == "queue_done" and self._check_data_apply_complete():
+            self.action_done()
+
+    def _check_bulk_action_state(self):
+        """Ensure a bulk Retry/Ignore action only runs while queued.
+
+        :raises UserError: when the document is not in state
+            ``queue_done`` -- Apply's own fan-out
+            (``_10_enqueue_data_apply_jobs``) only runs once, right
+            after Queue To Done is reached, so retrying or ignoring
+            lines in bulk before that would race it
+        """
+        self.ensure_one()
+        if self.state != "queue_done":
+            error_message = """
+Context: Handling problem Data lines in bulk
+Document: %s
+Problem: Bulk Retry/Ignore is only allowed while the document is Queue To Done
+Solution: Wait for the document to reach Queue To Done, then retry/ignore again
+""" % (
+                self.name or str(self.id),
+            )
+            raise UserError(_(error_message))
+
+    def action_retry_all_problem_data(self):
+        """Retry every problem Data line of this document.
+
+        :return: nothing
+        """
+        for record in self.sudo():
+            record._retry_all_problem_data()
+
+    def _retry_all_problem_data(self):
+        """Retry every Data line currently in a resolvable state.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        self._check_bulk_action_state()
+        lines = self.data_ids.filtered(lambda d: d.state in d._resolvable_states)
+        for line in lines:
+            line._retry()
+
+    def action_open_ignore_all_wizard(self):
+        """Open the Ignore All Problem Lines wizard for this document.
+
+        :return: an ``ir.actions.act_window`` dict
+        """
+        for record in self.sudo():
+            result = record._open_ignore_all_wizard()
+        return result
+
+    def _open_ignore_all_wizard(self):
+        """Build the window action opening the Ignore All wizard.
+
+        :return: an ``ir.actions.act_window`` dict, ``target`` "new",
+            pointing at ``ignore_data_import_error``
+        """
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Ignore All Problem Lines"),
+            "res_model": "ignore_data_import_error",
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def _ignore_all_problem_data(self, reason):
+        """Ignore every Data line currently in a resolvable state.
+
+        Called by the ``ignore_data_import_error`` wizard's Confirm.
+
+        :param reason: shared Ignore Reason applied to every problem
+            line
+        :return: nothing
+        """
+        self.ensure_one()
+        self._check_bulk_action_state()
+        lines = self.data_ids.filtered(lambda d: d.state in d._resolvable_states)
+        for line in lines:
+            line._ignore(reason)
 
     @ssi_decorator.insert_on_form_view()
     def _insert_form_element(self, view_arch):
