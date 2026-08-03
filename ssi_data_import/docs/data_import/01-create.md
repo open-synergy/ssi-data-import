@@ -5,7 +5,7 @@
 > **Menu:** Data Import > Transactions > Data Imports\
 > **Actor:** user in group `Data Import - User` (`data_import_user_group`)\
 > **State:** `—` → `draft`\
-> **Inline Actions:** `action_load_data` (Load Data)
+> **Inline Actions:** `action_load_data` (Load Data), `action_resolve` (Resolve)
 
 ## Pre-Condition
 
@@ -31,6 +31,22 @@
    document moves past Draft. It may be clicked again after re-uploading a different
    Import File: existing Data lines are replaced, not duplicated. One Data line is
    created for every row of the source file.
+6. Click **Resolve** to link each Data line to the Target Model record it corresponds
+   to, using the Template's Matcher rules. Resolve is read-only — it never writes to the
+   Target Model — and may be run again any number of times; running it twice in a row
+   leaves every line in the same state. Review the **State** badge of each Data line
+   before confirming the document:
+   - **Matched** (default badge): a Target Model record was found (or, for a Template
+     configured to create missing records, prepared to be created).
+   - **No Match** / **Multiple Matches** (yellow): no record, or more than one record,
+     satisfied the Template's Matcher rules. These do **not** block Confirm.
+   - **Conflict** (red): this line and another line in the same document resolved to the
+     same Target Model record — see the **Conflicting Line** field. **Confirm is blocked
+     while any line is Conflict.**
+   - **Error** (red): a Required matcher's Column was empty for this row, or the row
+     found no Target Model record and the Template is configured to error. Resolve also
+     runs automatically right before Confirm, so reviewing it here is optional but
+     recommended — Confirm still fails on any Conflict line left unresolved.
 
 ## Post-Condition
 
@@ -38,3 +54,5 @@
 - The document remains in state **Draft**.
 - One Data line appears in the **Import Data** tab for every row of the source file, and
   the **# Data** counter reflects that count.
+- After Resolve, each Data line's **State** reflects whether its Target Model record was
+  found, and Matched lines carry a **Preview** of the changes that would be applied.

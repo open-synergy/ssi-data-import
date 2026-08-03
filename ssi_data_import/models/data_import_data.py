@@ -2,7 +2,10 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
+import hashlib
+import json
+
+from odoo import _, fields, models
 
 
 class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
@@ -10,11 +13,13 @@ class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
     One line per row read from a ``data_import`` document's Import
     File, storing the raw row as JSON. ``mixin.source_document``
     provides a generic pointer to whatever Target Model record this
-    line ends up matched with. Finding that record (Matched/No
-    Match/Multiple Matches) and applying changes to it
-    (Conflict/Stale/Error/Ignored/Done) are implemented by later
-    modules; this model only owns the raw row and its eventual
-    processing state.
+    line ends up matched with. Resolve (``data_import.action_resolve``)
+    is the read-only, repeatable phase that finds that record using
+    the Template's Matcher rules, fills ``preview``/``value_hash``,
+    and flags conflicting lines (Conflict/Stale/Error/Ignored are all
+    set by Resolve or its conflict checks); actually applying the
+    previewed changes to the Target Model is implemented by a later
+    module.
     """
 
     _name = "data_import.data"
@@ -84,3 +89,274 @@ class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
         copy=False,
         help="Queue job that processed this line, if any.",
     )
+    preview = fields.Text(
+        string="Preview",
+        copy=False,
+        help=(
+            "JSON object, filled by Resolve, mapping each configured "
+            "Action's key to its {'before', 'after'} value pair. "
+            "Permanent audit trail -- never cleared once this line "
+            "reaches Done, since this module writes changes without "
+            "keeping a rollback snapshot."
+        ),
+    )
+    value_hash = fields.Char(
+        string="Value Hash",
+        copy=False,
+        help=(
+            "SHA-256 fingerprint of every 'before' value in Preview, "
+            "sorted by Preview key. Recomputed on every Resolve; "
+            "meant to be re-checked when this line is applied, to "
+            "detect that the Target Model record changed since."
+        ),
+    )
+    conflict_data_id = fields.Many2one(
+        string="Conflicting Line",
+        comodel_name="data_import.data",
+        readonly=True,
+        copy=False,
+        help=(
+            "Other Data line -- in the same document -- that resolved "
+            "to the same Target Model record first. Filled by Resolve "
+            "when this line's state becomes Conflict."
+        ),
+    )
+
+    _resolvable_states = (
+        "draft",
+        "no_match",
+        "multi_match",
+        "conflict",
+        "stale",
+        "error",
+    )
+
+    def _resolve(self, template):
+        """Read-only (re-)resolution of this line against ``template``.
+
+        Builds the search domain from ``template.matcher_ids``,
+        searches the Target Model, and applies On No Match / On
+        Multiple Matches. Never writes to the Target Model -- only
+        this line's own ``state``, ``source_document_*``, ``preview``
+        and ``value_hash`` are written. Idempotent: calling it again
+        with the same ``data``/Template reaches the same state.
+
+        :param template: the ``data_import_template`` in use
+        :return: nothing
+        """
+        self.ensure_one()
+        row = json.loads(self.data or "{}")
+        domain = self._build_matcher_domain(template, row)
+        if domain is None:
+            self._set_error(_("A Required matcher's Column is empty for this row."))
+            return
+
+        target_model = self.env[template.model_name]
+        matches = target_model.search(domain)
+
+        if not matches:
+            self._resolve_no_match(template, row)
+        elif len(matches) > 1:
+            self._resolve_multi_match(template, row, matches)
+        else:
+            self._resolve_matched(template, row, matches)
+
+    def _build_matcher_domain(self, template, row):
+        """Build the AND-combined search domain for this row.
+
+        Combines every ``template.matcher_ids`` line, in Matcher
+        ``sequence`` order, into one domain. A Required matcher whose
+        Column is empty in ``row`` aborts the whole domain instead of
+        searching with an empty value.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :return: list of ``(field_path, operator, value)`` domain
+            leaves, or ``None`` when a Required matcher's Column is
+            empty in ``row``
+        """
+        self.ensure_one()
+        domain = []
+        for matcher in template.matcher_ids:
+            raw_value = row.get(matcher.column)
+            if matcher.required and not raw_value:
+                return None
+            domain.append(
+                (
+                    matcher.field_path,
+                    matcher.operator,
+                    matcher._resolve_value(row),
+                )
+            )
+        return domain
+
+    def _resolve_no_match(self, template, row):
+        """Apply Template's On No Match to a row with zero matches.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :return: nothing
+        """
+        self.ensure_one()
+        if template.on_no_match == "skip":
+            self.write(
+                {
+                    "state": "ignored",
+                    "ignore_reason": _(
+                        "No matching record found; Template is "
+                        "configured to skip rows with no match."
+                    ),
+                    "error_message": False,
+                }
+            )
+        elif template.on_no_match == "create":
+            self._resolve_create(template, row)
+        else:
+            self.write({"state": "no_match", "error_message": False})
+
+    def _resolve_multi_match(self, template, row, matches):
+        """Apply Template's On Multiple Matches to a multi-match row.
+
+        "Use First Match" and "Update All Matches" both preview
+        against the first match here -- applying every match for
+        "Update All Matches" is implemented by the later Apply
+        module, which is expected to re-run the Matcher search itself
+        rather than rely on this line's single ``source_document_*``
+        pointer.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :param matches: recordset of every Target Model record found
+        :return: nothing
+        """
+        self.ensure_one()
+        if template.on_multi_match in ("first", "update_all"):
+            self._resolve_matched(template, row, matches[0])
+        else:
+            self.write({"state": "multi_match", "error_message": False})
+
+    def _resolve_matched(self, template, row, target):
+        """Mark this line Matched against a single ``target`` record.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :param target: the single resolved Target Model record
+        :return: nothing
+        """
+        self.ensure_one()
+        preview = self._build_preview(template, row, target)
+        self.write(
+            {
+                "state": "matched",
+                "source_document_model_id": template.model_id.id,
+                "source_document_res_id": target.id,
+                "preview": json.dumps(preview, default=str),
+                "value_hash": self._compute_value_hash(preview),
+                "error_message": False,
+            }
+        )
+
+    def _resolve_create(self, template, row):
+        """Preview the record On No Match = Create would create.
+
+        Evaluates ``template.create_vals_code`` and stores the result
+        under a ``"create"`` key in Preview -- it is never actually
+        called here, since Resolve must not write to the Target
+        Model. ``source_document_res_id`` is left at ``0``: there is
+        no existing record yet, only a prepared set of values.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :return: nothing
+        """
+        self.ensure_one()
+        create_vals = template._eval_create_vals(row)
+        preview = {"create": {"before": None, "after": create_vals}}
+        self.write(
+            {
+                "state": "matched",
+                "source_document_model_id": template.model_id.id,
+                "source_document_res_id": 0,
+                "preview": json.dumps(preview, default=str),
+                "value_hash": self._compute_value_hash(preview),
+                "error_message": False,
+            }
+        )
+
+    def _build_preview(self, template, row, target):
+        """Build the before/after preview dict for ``target``.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :param target: the resolved Target Model record
+        :return: dict mapping each Action's key (its Field Name, or
+            ``"action_<sequence>"`` when Field Name is empty) to
+            ``{"before": ..., "after": ...}``
+        """
+        self.ensure_one()
+        preview = {}
+        for action in template.action_ids.sorted("sequence"):
+            key = action.field_name or ("action_%s" % action.sequence)
+            preview[key] = {
+                "before": action._resolve_before(target),
+                "after": action._resolve_after(row, target),
+            }
+        return preview
+
+    def _compute_value_hash(self, preview):
+        """Fingerprint every 'before' value of ``preview``.
+
+        :param preview: dict built by ``_build_preview`` or
+            ``_resolve_create``
+        :return: hex SHA-256 digest of every ``before`` value, sorted
+            by Preview key for a deterministic result
+        """
+        before_values = [preview[key]["before"] for key in sorted(preview)]
+        payload = json.dumps(before_values, sort_keys=True, default=str)
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+    def _set_error(self, message):
+        """Mark this line Error with ``message``.
+
+        :param message: human-readable explanation stored in
+            ``error_message``
+        :return: nothing
+        """
+        self.ensure_one()
+        self.write({"state": "error", "error_message": message})
+
+    def _check_cross_document_conflict(self):
+        """Warn when another document already applied to this target.
+
+        Called by ``data_import._check_resolve_conflicts`` once per
+        distinct target within a document, after intra-document
+        duplicates are already flagged Conflict. Never changes
+        ``state`` -- the other document's Done line is not this
+        document's business to invalidate, only to warn about.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        other = self.search(
+            [
+                ("id", "!=", self.id),
+                ("import_id", "!=", self.import_id.id),
+                ("state", "=", "done"),
+                (
+                    "source_document_model_id",
+                    "=",
+                    self.source_document_model_id.id,
+                ),
+                ("source_document_res_id", "=", self.source_document_res_id),
+            ],
+            limit=1,
+        )
+        if not other:
+            return
+        warning = _(
+            "Target record was already updated by a Done line on "
+            "another document (%s)."
+        ) % (other.import_id.name or other.import_id.id)
+        self.error_message = (
+            "%s\n%s" % (self.error_message, warning) if self.error_message else warning
+        )

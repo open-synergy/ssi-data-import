@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 from .data_import_common import check_dotted_path
 
@@ -84,6 +85,29 @@ class DataImportTemplateMatcher(models.Model):
         help="If checked, a row with an empty value for Column is "
         "rejected instead of being matched with a partial rule.",
     )
+
+    def _resolve_value(self, row):
+        """Resolve the value compared against ``field_path`` for ``row``.
+
+        Returns the raw Column value from ``row`` unchanged when
+        Value Code is empty, otherwise evaluates Value Code. Called
+        by ``data_import.data._resolve`` while building the search
+        domain -- never while writing to the Target Model. Available
+        variables: ``env``, ``document`` (the Template), ``time``,
+        ``datetime``, ``dateutil``, ``timezone``, ``float_compare``,
+        ``b64encode``, ``b64decode``, ``row`` and ``value`` (raw
+        value of Column in ``row``).
+
+        :param row: dict of the current file row, keyed by Column
+        :return: value used in the search domain leaf
+        """
+        self.ensure_one()
+        raw_value = row.get(self.column)
+        if not self.value_code:
+            return raw_value
+        localdict = self.template_id._get_default_localdict()
+        localdict.update({"row": row, "value": raw_value})
+        return safe_eval(self.value_code, localdict, mode="eval", nocopy=True)
 
     @api.constrains("field_path", "template_id")
     def _check_field_path(self):

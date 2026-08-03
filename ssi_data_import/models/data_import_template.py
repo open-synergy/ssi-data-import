@@ -4,6 +4,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.safe_eval import safe_eval
 
 
 class DataImportTemplate(models.Model):
@@ -249,6 +250,30 @@ class DataImportTemplate(models.Model):
                     )
                     % rec.model_id.model
                 )
+
+    def _eval_create_vals(self, row):
+        """Evaluate Create Values Code for ``row``, without creating.
+
+        Used by Resolve (On No Match = Create) to preview the record
+        that would be created; the caller never calls ``.create()``
+        with the result during Resolve, since Resolve must not write
+        to the Target Model. Available variables: ``env``,
+        ``document`` (this Template), ``time``, ``datetime``,
+        ``dateutil``, ``timezone``, ``float_compare``, ``b64encode``,
+        ``b64decode`` and ``row`` (dict of the current file row,
+        keyed by Column).
+
+        :param row: dict of the current file row, keyed by Column
+        :return: dict of values a Target Model record would be
+            created with, or an empty dict when Create Values Code is
+            empty
+        """
+        self.ensure_one()
+        if not self.create_vals_code:
+            return {}
+        localdict = self._get_default_localdict()
+        localdict.update({"row": row})
+        return safe_eval(self.create_vals_code, localdict, mode="eval", nocopy=True)
 
     def _get_delimiter_character(self):
         """Return the actual character configured by ``delimiter``.

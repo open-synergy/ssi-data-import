@@ -220,6 +220,12 @@ class DataImport(models.Model):  # pylint: disable=too-few-public-methods
         compute_sudo=True,
         help="Number of Data lines currently in state Ignored.",
     )
+    resolved_date = fields.Datetime(
+        string="Resolved Date",
+        readonly=True,
+        copy=False,
+        help="Date and time Resolve last completed on this document.",
+    )
 
     @api.depends("data_ids.state")
     def _compute_num_of_data(self):
@@ -530,6 +536,124 @@ Solution: Check the file is not corrupted and matches Template's File Format""" 
         if template.sheet_selector == "name" and template.sheet_name:
             return workbook.sheet_by_name(template.sheet_name)
         return workbook.sheet_by_index(0)
+
+    def action_resolve(self):
+        """Read-only, idempotent (re-)resolution of every Data line.
+
+        Re-links every ``data_ids`` line currently in one of Draft,
+        No Match, Multiple Matches, Conflict, Stale or Error to its
+        Target Model record, using ``template_id``'s Matcher/Action
+        rules, then flags conflicting lines. Never writes to the
+        Target Model, and running it again after a previous run
+        reaches the same result. Lines already Done or Ignored are
+        left untouched. Available as a manual button while the
+        document is Draft; also run automatically by
+        ``_10_run_resolve`` right before Confirm's policy is enforced.
+
+        :raises UserError: when the document is not in state ``draft``
+        :return: nothing
+        """
+        for record in self.sudo():
+            record._check_resolve_state()
+            record._resolve()
+
+    def _check_resolve_state(self):
+        """Ensure Resolve only runs while the document is Draft.
+
+        :raises UserError: when the document is not in state ``draft``
+        """
+        self.ensure_one()
+        if self.state != "draft":
+            error_message = """
+Context: Resolving data import
+Document: %s
+Problem: Resolve is only allowed while the document is Draft
+Solution: Reset the document to Draft before running Resolve again""" % (
+                self.name or str(self.id)
+            )
+            raise UserError(_(error_message))
+
+    def _resolve(self):
+        """Re-resolve every eligible Data line, then flag conflicts.
+
+        Called both by ``action_resolve`` (after its Draft guard) and
+        directly by ``_10_run_resolve`` (while the document is still
+        Draft, mid-Confirm, where the guard would be redundant).
+
+        :return: nothing
+        """
+        self.ensure_one()
+        lines = self.data_ids.filtered(lambda d: d.state in d._resolvable_states)
+        for line in lines:
+            line._resolve(self.template_id)
+        self._check_resolve_conflicts()
+        self.resolved_date = fields.Datetime.now()
+
+    def _check_resolve_conflicts(self):
+        """Flag intra-document duplicates and cross-document overlaps.
+
+        Two lines in *this* document (state Matched or Done) pointing
+        at the same Target Model record mark the later one (by
+        ``sequence``) Conflict, with ``conflict_data_id`` set to the
+        earlier one. The first line for each distinct target is then
+        also checked against *other* documents -- see
+        ``data_import.data._check_cross_document_conflict``.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        seen = {}
+        candidates = self.data_ids.filtered(
+            lambda d: d.state in ("matched", "done")
+            and d.source_document_model_id
+            and d.source_document_res_id
+        ).sorted("sequence")
+        for line in candidates:
+            key = (
+                line.source_document_model_id.id,
+                line.source_document_res_id,
+            )
+            first = seen.get(key)
+            if first:
+                line.write({"state": "conflict", "conflict_data_id": first.id})
+                continue
+            seen[key] = line
+            line._check_cross_document_conflict()
+
+    @ssi_decorator.pre_confirm_check()
+    def _10_run_resolve(self):
+        """Re-run Resolve immediately before Confirm's policy check.
+
+        Keeps the gap between what the user reviewed and what a later
+        Apply step will write as small as possible.
+
+        :return: nothing
+        """
+        self._resolve()
+
+    @ssi_decorator.pre_confirm_check()
+    def _20_check_no_conflict(self):
+        """Block Confirm while any Data line is in state Conflict.
+
+        No Match and Multiple Matches lines never block Confirm --
+        Template's On No Match / On Multiple Matches already resolved
+        them by leaving the row alone -- only Conflict does.
+
+        :raises UserError: when ``data_ids`` still has a Conflict
+            line after ``_10_run_resolve`` just re-ran
+        """
+        self.ensure_one()
+        conflict_lines = self.data_ids.filtered(lambda d: d.state == "conflict")
+        if conflict_lines:
+            error_message = """
+Context: Confirm data import
+Document: %s
+Problem: %d Data line(s) are still in Conflict
+Solution: Review the Conflict lines in the Import Data tab and re-run Resolve""" % (
+                self.name or str(self.id),
+                len(conflict_lines),
+            )
+            raise UserError(_(error_message))
 
     @ssi_decorator.insert_on_form_view()
     def _insert_form_element(self, view_arch):

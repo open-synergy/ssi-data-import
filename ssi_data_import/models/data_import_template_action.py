@@ -2,7 +2,10 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import datetime
+
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 from .data_import_common import check_dotted_path
 
@@ -142,6 +145,108 @@ class DataImportTemplateAction(models.Model):
         "is empty for the current row, instead of writing an empty "
         "value.",
     )
+
+    def _resolve_target_record(self, target):
+        """Return the record ``target_path`` points to from ``target``.
+
+        Pure ``getattr`` walk over each dot-separated segment of
+        ``target_path`` -- it cannot subscript into a dict/JSON
+        value. Returns ``target`` unchanged when ``target_path`` is
+        empty.
+
+        :param target: resolved Target Model record this rule
+            ultimately acts on
+        :return: resolved recordset
+        """
+        self.ensure_one()
+        record = target
+        if self.target_path:
+            for segment in self.target_path.split("."):
+                record = getattr(record, segment)
+        return record
+
+    def _resolve_before(self, target):
+        """Return the value this rule would overwrite, for Preview.
+
+        Only Write Field and Many2many Set act on a single named
+        field, so only those two Action Types return a value here --
+        One2many Upsert and Python Code return ``None`` since neither
+        has one field to read a "before" value from.
+
+        :param target: resolved Target Model record, or a falsy
+            (empty) recordset when previewing an On No Match =
+            Create row, which has no existing record to read from
+        :return: current field value (JSON-safe), or ``None``
+        """
+        self.ensure_one()
+        if self.action_type not in ("write", "m2m_set"):
+            return None
+        if not self.field_name or not target:
+            return None
+        record = self._resolve_target_record(target)
+        if not record:
+            return None
+        return self._jsonify(getattr(record, self.field_name, None))
+
+    def _resolve_after(self, row, target):
+        """Return the value this rule would write, for Preview.
+
+        Evaluates Value Code (Write Field, Many2many Set) or Vals
+        Code (One2many Upsert) against ``row``. Python Code has no
+        single deterministic value to preview and always returns
+        ``None`` -- previewing it would mean running it, which
+        Resolve must never do.
+
+        :param row: dict of the current file row, keyed by Column
+        :param target: resolved Target Model record, or a falsy
+            (empty) recordset when previewing an On No Match =
+            Create row
+        :return: intended value (JSON-safe), or ``None``
+        """
+        self.ensure_one()
+        if self.action_type == "python":
+            return None
+        if self.skip_if_empty and self.column and not row.get(self.column):
+            return None
+        if self.action_type == "o2m_upsert":
+            value = self._eval_code(self.vals_code, row)
+        else:
+            value = self._eval_code(self.value_code, row)
+        return self._jsonify(value)
+
+    def _eval_code(self, code, row):
+        """Evaluate a Value/Vals Code expression for ``row``.
+
+        Called only while building Preview -- never while applying
+        changes to the Target Model. Available variables: ``env``,
+        ``document`` (the Template), ``time``, ``datetime``,
+        ``dateutil``, ``timezone``, ``float_compare``, ``b64encode``,
+        ``b64decode``, ``row`` and ``value`` (raw value of Column in
+        ``row``).
+
+        :param code: Python expression to evaluate, or empty
+        :param row: dict of the current file row, keyed by Column
+        :return: evaluated value, or ``None`` when ``code`` is empty
+        """
+        self.ensure_one()
+        if not code:
+            return None
+        localdict = self.template_id._get_default_localdict()
+        localdict.update({"row": row, "value": row.get(self.column)})
+        return safe_eval(code, localdict, mode="eval", nocopy=True)
+
+    def _jsonify(self, value):
+        """Convert an ORM value into a JSON-serializable value.
+
+        :param value: any field value read from, or evaluated
+            against, a Target Model record
+        :return: value safe to pass to ``json.dumps``
+        """
+        if isinstance(value, models.BaseModel):
+            return value.ids
+        if isinstance(value, (datetime.date, datetime.datetime)):
+            return value.isoformat()
+        return value
 
     @api.constrains("target_path", "template_id")
     def _check_target_path(self):
