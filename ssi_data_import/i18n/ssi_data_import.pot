@@ -20,6 +20,8 @@ msgstr ""
 
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__num_of_data
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__data_id
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__data_id
 msgid "# Data"
 msgstr ""
 
@@ -45,6 +47,7 @@ msgstr ""
 
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__import_id
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__import_id
 msgid "# Import"
 msgstr ""
 
@@ -277,6 +280,13 @@ msgid "Can Start Finished Queue"
 msgstr ""
 
 #. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.edit_data_import_row_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.ignore_data_import_error_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.ignore_data_import_row_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__cancel_reason_id
 msgid "Cancel Reason"
 msgstr ""
@@ -403,6 +413,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__create_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__create_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__create_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__create_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__create_uid
 msgid "Created by"
 msgstr ""
 
@@ -412,12 +425,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__create_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__create_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__create_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__create_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__create_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__create_date
 msgid "Created on"
 msgstr ""
 
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__data_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_data__data
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__data
 #: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
 msgid "Data"
 msgstr ""
@@ -533,6 +550,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -581,6 +601,22 @@ msgid "Draft"
 msgstr ""
 
 #. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Edit"
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid "Edit Data"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_edit_data_import_row
+msgid "Edit Data Import Row"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__file_encoding
 msgid "Encoding"
 msgstr ""
@@ -611,6 +647,16 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_format__xlsx
 msgid "Excel (.xlsx)"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_ignore_data_import_error__reason
+msgid "Explanation recorded on every ignored Data line."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_ignore_data_import_row__reason
+msgid "Explanation recorded on the Data line's Ignore Reason."
 msgstr ""
 
 #. module: ssi_data_import
@@ -711,6 +757,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__id
 msgid "ID"
 msgstr ""
 
@@ -752,6 +801,38 @@ msgstr ""
 msgid ""
 "If checked, this rule is not applied at all when Column is empty for the "
 "current row, instead of writing an empty value."
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Ignore"
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Ignore All"
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import.py:0
+#, python-format
+msgid "Ignore All Problem Lines"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_ignore_data_import_error
+msgid "Ignore Data Import Error"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_ignore_data_import_row
+msgid "Ignore Data Import Row"
+msgstr ""
+
+#. module: ssi_data_import
+#: code:addons/ssi_data_import/models/data_import_data.py:0
+#, python-format
+msgid "Ignore Data Line"
 msgstr ""
 
 #. module: ssi_data_import
@@ -807,6 +888,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row____last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -816,6 +900,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__write_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__write_uid
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__write_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__write_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__write_uid
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__write_uid
 msgid "Last Updated by"
 msgstr ""
 
@@ -825,6 +912,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__write_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_action__write_date
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template_matcher__write_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__write_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__write_date
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__write_date
 msgid "Last Updated on"
 msgstr ""
 
@@ -1206,6 +1296,11 @@ msgid "Queue job that processed this line, if any."
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_edit_data_import_row__data
+msgid "Raw JSON object to overwrite the Data line's Data with."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_data__data
 msgid ""
 "Raw row data read from Import File, stored as a JSON object keyed by column "
@@ -1214,8 +1309,20 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__reason
+#: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__reason
+msgid "Reason"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,help:ssi_data_import.field_data_import_data__ignore_reason
 msgid "Reason recorded when this line is ignored instead of applied."
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.ignore_data_import_error_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.ignore_data_import_row_view_form
+msgid "Reason..."
 msgstr ""
 
 #. module: ssi_data_import
@@ -1289,6 +1396,16 @@ msgid ""
 msgstr ""
 
 #. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Retry"
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.data_import_view_form
+msgid "Retry All"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__reviewer_id
 msgid "Reviewer"
 msgstr ""
@@ -1330,6 +1447,13 @@ msgstr ""
 msgid ""
 "SHA-256 hash of Import File's content, computed by Load Data and used to "
 "detect duplicate imports."
+msgstr ""
+
+#. module: ssi_data_import
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.edit_data_import_row_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.ignore_data_import_error_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_data_import.ignore_data_import_row_view_form
+msgid "Save"
 msgstr ""
 
 #. module: ssi_data_import
@@ -1513,6 +1637,21 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__quotechar
 msgid "Text Qualifier"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_ignore_data_import_error__import_id
+msgid "The Data Import document whose problem lines are ignored."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_edit_data_import_row__data_id
+msgid "The Data line being edited."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_ignore_data_import_row__data_id
+msgid "The Data line being ignored."
 msgstr ""
 
 #. module: ssi_data_import
