@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="data_import_template_all_access" model="ir.model.access">
+    <field name="name">data_import_template - all</field>
+    <field name="model_id" ref="model_data_import_template" />
+    <field name="perm_read" eval="1" />
+    <field name="perm_write" eval="0" />
+    <field name="perm_create" eval="0" />
+    <field name="perm_unlink" eval="0" />
+</record>
+
+<record id="data_import_template_user_access" model="ir.model.access">
+    <field name="name">data_import_template - user</field>
+    <field name="model_id" ref="model_data_import_template" />
+    <field name="group_id" ref="data_import_template_group" />
+    <field name="perm_read" eval="1" />
+    <field name="perm_write" eval="1" />
+    <field name="perm_create" eval="1" />
+    <field name="perm_unlink" eval="1" />
+</record>
+
+<!-- data_import_template.matcher — detail/child, follows parent's group -->
+<record id="data_import_template_matcher_all_access" model="ir.model.access">
+    <field name="name">data_import_template.matcher - all</field>
+    <field name="model_id" ref="model_data_import_template_matcher" />
+    <field name="perm_read" eval="1" />
+    <field name="perm_write" eval="0" />
+    <field name="perm_create" eval="0" />
+    <field name="perm_unlink" eval="0" />
+</record>
+
+<record id="data_import_template_matcher_user_access" model="ir.model.access">
+    <field name="name">data_import_template.matcher - user</field>
+    <field name="model_id" ref="model_data_import_template_matcher" />
+    <field name="group_id" ref="data_import_template_group" />
+    <field name="perm_read" eval="1" />
+    <field name="perm_write" eval="1" />
+    <field name="perm_create" eval="1" />
+    <field name="perm_unlink" eval="1" />
+</record>
+
+<!-- data_import_template.action — detail/child, follows parent's group -->
+<record id="data_import_template_action_all_access" model="ir.model.access">
+    <field name="name">data_import_template.action - all</field>
+    <field name="model_id" ref="model_data_import_template_action" />
+    <field name="perm_read" eval="1" />
+    <field name="perm_write" eval="0" />
+    <field name="perm_create" eval="0" />
+    <field name="perm_unlink" eval="0" />
+</record>
+
+<record id="data_import_template_action_user_access" model="ir.model.access">
+    <field name="name">data_import_template.action - user</field>
+    <field name="model_id" ref="model_data_import_template_action" />
+    <field name="group_id" ref="data_import_template_group" />
+    <field name="perm_read" eval="1" />
+    <field name="perm_write" eval="1" />
+    <field name="perm_create" eval="1" />
+    <field name="perm_unlink" eval="1" />
+</record>
+</odoo>
