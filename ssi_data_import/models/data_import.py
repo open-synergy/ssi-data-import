@@ -234,9 +234,7 @@ class DataImport(models.Model):  # pylint: disable=too-few-public-methods
             result_done = len(data.filtered(lambda d: d.state == "done"))
             result_error = len(data.filtered(lambda d: d.state == "error"))
             result_no_match = len(data.filtered(lambda d: d.state == "no_match"))
-            result_multi_match = len(
-                data.filtered(lambda d: d.state == "multi_match")
-            )
+            result_multi_match = len(data.filtered(lambda d: d.state == "multi_match"))
             result_conflict = len(data.filtered(lambda d: d.state == "conflict"))
             result_stale = len(data.filtered(lambda d: d.state == "stale"))
             result_ignored = len(data.filtered(lambda d: d.state == "ignored"))
@@ -386,9 +384,7 @@ Solution: Reset the document to Draft before loading data again""" % (
             row_dict = {}
             for position, cell in enumerate(raw_row):
                 key = headers[position] if headers else str(position)
-                row_dict[key] = self._normalize_cell_value(
-                    cell, template.date_format
-                )
+                row_dict[key] = self._normalize_cell_value(cell, template.date_format)
             rows.append(row_dict)
         return rows
 

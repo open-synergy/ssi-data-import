@@ -34,18 +34,12 @@
 <record id="data_import_company_child_group" model="res.groups">
     <field name="name">Company and All Child Companies</field>
     <field name="category_id" ref="data_import_data_ownership_module_category" />
-    <field
-            name="implied_ids"
-            eval="[(4, ref('data_import_company_group'))]"
-        />
+    <field name="implied_ids" eval="[(4, ref('data_import_company_group'))]" />
 </record>
 
 <record id="data_import_all_group" model="res.groups">
     <field name="name">All</field>
     <field name="category_id" ref="data_import_data_ownership_module_category" />
-    <field
-            name="implied_ids"
-            eval="[(4, ref('data_import_company_child_group'))]"
-        />
+    <field name="implied_ids" eval="[(4, ref('data_import_company_child_group'))]" />
 </record>
 </odoo>

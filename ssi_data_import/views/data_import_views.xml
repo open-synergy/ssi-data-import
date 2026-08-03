@@ -6,7 +6,10 @@
 <record id="data_import_view_search" model="ir.ui.view">
     <field name="name">data_import - search</field>
     <field name="model">data_import</field>
-    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_search" />
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
     <field name="mode">primary</field>
     <field name="arch" type="xml">
         <data>

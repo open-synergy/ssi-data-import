@@ -26,7 +26,8 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             tour.stepUtils.showAppsMenuItem(),
             {
                 content: "Open the Data Import app",
-                trigger: '.o_app[data-menu-xmlid="ssi_data_import.menu_root_data_import"]',
+                trigger:
+                    '.o_app[data-menu-xmlid="ssi_data_import.menu_root_data_import"]',
             },
             {
                 content: "Open the Transactions menu",
@@ -41,7 +42,8 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             {
                 // Gerbang: tunggu action TUJUAN benar-benar terpasang.
                 content: "Data Imports list is displayed",
-                trigger: ".o_control_panel .breadcrumb-item.active:contains(Data Imports)",
+                trigger:
+                    ".o_control_panel .breadcrumb-item.active:contains(Data Imports)",
                 extra_trigger: ".o_list_view",
                 run: function () {
                     // Assertion only; do not trigger the default click action.
@@ -72,7 +74,8 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             },
             {
                 content: "Pick Tour Import Template from the dropdown",
-                trigger: ".ui-autocomplete .ui-menu-item a:contains(Tour Import Template)",
+                trigger:
+                    ".ui-autocomplete .ui-menu-item a:contains(Tour Import Template)",
                 in_modal: false,
             },
 
@@ -105,7 +108,8 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             // with no Import File uploaded: it stays in Draft.
             {
                 content: "Status is still Draft",
-                trigger: ".o_statusbar_status .o_arrow_button[data-value='draft'].btn-primary",
+                trigger:
+                    ".o_statusbar_status .o_arrow_button[data-value='draft'].btn-primary",
                 run: function () {
                     // Assertion only; do not trigger the default click action.
                 },
