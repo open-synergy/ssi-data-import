@@ -1,0 +1,168 @@
+scenarios:
+  - name: "Create Data Import Template With Defaults"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+      - step: "Create template with only name, code and model_id"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Tour Template"
+          code: "/"
+          model_id: "REC: partner_model.id"
+      - step: "Assert defaults"
+        action: "assert"
+        target: "template"
+        asserts:
+          file_format:
+            type: "value"
+            expected: "csv"
+          on_no_match:
+            type: "value"
+            expected: "error"
+          on_multi_match:
+            type: "value"
+            expected: "error"
+          skip_empty_lines:
+            type: "value"
+            operator: "is_truthy"
+          active:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "Create Matcher With Default Sequence"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Matcher Template"
+          code: "/"
+          model_id: "REC: partner_model.id"
+      - step: "Create matcher without sequence"
+        action: "create"
+        model: "data_import_template.matcher"
+        save_as: "matcher"
+        values:
+          template_id: "REC: template.id"
+          field_path: "name"
+          column: "Name"
+      - step: "Assert default sequence and operator"
+        action: "assert"
+        target: "matcher"
+        asserts:
+          sequence:
+            type: "value"
+            expected: 5
+          operator:
+            type: "value"
+            expected: "="
+
+  - name: "Create Action With O2m Upsert Type"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Action Template"
+          code: "/"
+          model_id: "REC: partner_model.id"
+      - step: "Create o2m_upsert action"
+        action: "create"
+        model: "data_import_template.action"
+        save_as: "action"
+        values:
+          template_id: "REC: template.id"
+          action_type: "o2m_upsert"
+          field_name: "child_ids"
+          relation_field: "name"
+          key_code: "value"
+          vals_code: "{'name': value}"
+      - step: "Assert action was created with default skip_if_empty"
+        action: "assert"
+        target: "action"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          action_type:
+            type: "value"
+            expected: "o2m_upsert"
+          skip_if_empty:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "Reject Transient Target Model"
+    steps:
+      - step: "Get base.language.install model (transient)"
+        action: "ref"
+        xml_id: "base.model_base_language_install"
+        save_as: "transient_model"
+      - step: "Create template pointing to a transient model must fail"
+        action: "create"
+        model: "data_import_template"
+        expect_error:
+          type: "ValidationError"
+        values:
+          name: "Bad Template"
+          code: "/"
+          model_id: "REC: transient_model.id"
+
+  - name: "Reject Unknown Field Path Segment"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+      - step: "Create template targeting res.partner"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Path Template"
+          code: "/"
+          model_id: "REC: partner_model.id"
+      - step: "Create matcher with an unknown field_path segment"
+        action: "create"
+        model: "data_import_template.matcher"
+        expect_error:
+          type: "ValidationError"
+        values:
+          template_id: "REC: template.id"
+          field_path: "contact_id.tidak_ada_field"
+          column: "Column X"
+
+  - name: "Reject Invalid File Format Value"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Selection Template"
+          code: "/"
+          model_id: "REC: partner_model.id"
+      - step: "Writing an out-of-selection file_format must fail"
+        action: "write"
+        target: "template"
+        expect_error:
+          type: "ValueError"
+        values:
+          file_format: "pdf"

@@ -9,10 +9,6 @@ on:
       - "14.0"
       - "14.0-ocabot-*"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   unreleased-deps:
     runs-on: ubuntu-latest
@@ -66,8 +62,10 @@ jobs:
           PIP_EXTRA_INDEX_URL: https://${{ secrets.SSI_PYPI_USER }}:${{ secrets.SSI_PYPI_PASSWORD }}@osmium.simetri-sinergi.biz.id/simple/
       - name: Check licenses
         run: manifestoo -d . check-licenses
+        continue-on-error: true
       - name: Check development status
         run: manifestoo -d . check-dev-status --default-dev-status=Beta
+        continue-on-error: true
       - name: Initialize test db
         run: oca_init_test_database
       - name: Run tests

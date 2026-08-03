@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="data_import_module_category" model="ir.module.category">
+    <field name="name">Data Import</field>
+</record>
+
+<record id="data_import_configurator_module_category" model="ir.module.category">
+    <field name="name">Data Import - Configurator</field>
+    <field name="parent_id" ref="data_import_module_category" />
+</record>
+</odoo>

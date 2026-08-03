@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="data_import_template_view_search" model="ir.ui.view">
+    <field name="name">data_import_template - search</field>
+    <field name="model">data_import_template</field>
+    <field
+            name="inherit_id"
+            ref="ssi_master_data_mixin.mixin_master_data_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="model_name" />
+                <field name="file_format" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="data_import_template_view_tree" model="ir.ui.view">
+    <field name="name">data_import_template - tree</field>
+    <field name="model">data_import_template</field>
+    <field name="inherit_id" ref="ssi_master_data_mixin.mixin_master_data_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="model_name" />
+                <field name="file_format" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="data_import_template_view_form" model="ir.ui.view">
+    <field name="name">data_import_template - form</field>
+    <field name="model">data_import_template</field>
+    <field name="inherit_id" ref="ssi_master_data_mixin.mixin_master_data_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//notebook/page[@name='note']" position="before">
+
+                <!-- Target -->
+                <page name="target" string="Target">
+                    <group name="target_1">
+                        <group>
+                            <field name="model_id" />
+                            <field name="model_name" invisible="1" />
+                            <field name="on_no_match" />
+                            <field name="on_multi_match" />
+                        </group>
+                    </group>
+                    <group
+                            string="Create Values Code"
+                            attrs="{'invisible': [('on_no_match','!=','create')]}"
+                        >
+                        <field name="create_vals_code" nolabel="1" />
+                    </group>
+                </page>
+
+                <!-- File Format -->
+                <page name="file_format" string="File Format">
+                    <group name="file_format_1">
+                        <group>
+                            <field name="file_format" />
+                            <field
+                                    name="sheet_selector"
+                                    attrs="{'invisible': [('file_format','=','csv')]}"
+                                />
+                            <field
+                                    name="sheet_name"
+                                    attrs="{'invisible': ['|',('file_format','=','csv'),('sheet_selector','!=','name')]}"
+                                />
+                            <field
+                                    name="file_encoding"
+                                    attrs="{'invisible': [('file_format','!=','csv')]}"
+                                />
+                            <field
+                                    name="delimiter"
+                                    attrs="{'invisible': [('file_format','!=','csv')]}"
+                                />
+                            <field
+                                    name="quotechar"
+                                    attrs="{'invisible': [('file_format','!=','csv')]}"
+                                />
+                        </group>
+                        <group>
+                            <field name="no_header" />
+                            <field name="skip_empty_lines" />
+                            <field name="offset_row" />
+                            <field name="offset_column" />
+                        </group>
+                    </group>
+                </page>
+
+                <!-- Matcher -->
+                <page name="matcher" string="Matcher">
+                    <field name="matcher_ids">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="field_path" />
+                            <field name="column" />
+                            <field name="operator" />
+                            <field name="required" />
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="sequence" />
+                                    <field name="field_path" />
+                                    <field name="column" />
+                                    <field name="operator" />
+                                    <field name="required" />
+                                </group>
+                            </group>
+                            <group string="Value Code">
+                                <field name="value_code" nolabel="1" />
+                            </group>
+                        </form>
+                    </field>
+                </page>
+
+                <!-- Action -->
+                <page name="action" string="Action">
+                    <field name="action_ids">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="action_type" />
+                            <field name="target_path" />
+                            <field name="field_name" />
+                            <field name="column" />
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="sequence" />
+                                    <field name="action_type" />
+                                    <field name="target_path" />
+                                    <field name="field_name" />
+                                    <field
+                                            name="relation_field"
+                                            attrs="{'invisible': [('action_type','!=','o2m_upsert')]}"
+                                        />
+                                    <field name="column" />
+                                    <field
+                                            name="m2m_mode"
+                                            attrs="{'invisible': [('action_type','!=','m2m_set')]}"
+                                        />
+                                    <field name="skip_if_empty" />
+                                </group>
+                            </group>
+                            <group
+                                    string="Value Code"
+                                    attrs="{'invisible': [('action_type','not in',('write','m2m_set'))]}"
+                                >
+                                <field name="value_code" nolabel="1" />
+                            </group>
+                            <group
+                                    string="Key Code"
+                                    attrs="{'invisible': [('action_type','!=','o2m_upsert')]}"
+                                >
+                                <field name="key_code" nolabel="1" />
+                            </group>
+                            <group
+                                    string="Vals Code"
+                                    attrs="{'invisible': [('action_type','!=','o2m_upsert')]}"
+                                >
+                                <field name="vals_code" nolabel="1" />
+                            </group>
+                            <group
+                                    string="Python Code"
+                                    attrs="{'invisible': [('action_type','!=','python')]}"
+                                >
+                                <field name="python_code" nolabel="1" />
+                            </group>
+                        </form>
+                    </field>
+                </page>
+
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="data_import_template_action" model="ir.actions.act_window">
+    <field name="name">Data Import Templates</field>
+    <field name="res_model">data_import_template</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="data_import_template_menu"
+        name="Data Import Templates"
+        parent="menu_data_import_configuration"
+        action="data_import_template_action"
+        groups="data_import_template_group"
+        sequence="10"
+    />
+</odoo>
