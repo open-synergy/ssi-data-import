@@ -1,6 +1,3 @@
-options:
-  auto_refresh: true
-
 scenarios:
   - name: "Resolve Matches A Single Partner"
     steps:
