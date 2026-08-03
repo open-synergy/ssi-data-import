@@ -58,8 +58,7 @@ class TestUiDataImportHandleProblemRow(HttpSavepointCase):
                                 "sequence": 10,
                                 "action_type": "python",
                                 "python_code": (
-                                    "raise ValueError("
-                                    "'Deliberate failure for tour')"
+                                    "raise ValueError(" "'Deliberate failure for tour')"
                                 ),
                             },
                         )
@@ -81,9 +80,7 @@ class TestUiDataImportHandleProblemRow(HttpSavepointCase):
             {
                 "import_id": document.id,
                 "sequence": 10,
-                "data": (
-                    '{"vat": "TOURPROBVAT1", "name": "Should Not Matter"}'
-                ),
+                "data": ('{"vat": "TOURPROBVAT1", "name": "Should Not Matter"}'),
             }
         )
         document_as_admin = document.with_user(admin_user)

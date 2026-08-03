@@ -28,7 +28,8 @@ time it changes.
 3. If it holds, the document moves to Done automatically. If a line is still Draft,
    Matched, Error or Stale, the document stays at Queue To Done — edit, retry, or ignore
    the problem line(s) instead of starting over; see `14-handle-problem-data.md`. Cancel
-   and restart (see `10-cancel.md` and `01-create.md`'s Stale note) remains available too.
+   and restart (see `10-cancel.md` and `01-create.md`'s Stale note) remains available
+   too.
 
 ## Post-Condition
 

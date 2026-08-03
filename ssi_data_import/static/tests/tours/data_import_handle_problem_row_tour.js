@@ -89,9 +89,16 @@ odoo.define("ssi_data_import.data_import_handle_problem_row_tour", function (req
             },
 
             // Flow 5 — Fill in Reason
+            //
+            // Unlike a Many2one/Char field, a plain Text field with no
+            // label renders the <textarea> itself carrying both the
+            // o_field_widget class and the name attribute -- there is no
+            // wrapper div to descend into (confirmed from CI's captured
+            // DOM after the previous selector, ".o_field_widget[name=
+            // 'reason'] textarea", timed out with zero matches).
             {
                 content: "Fill in the Reason",
-                trigger: ".o_field_widget[name='reason'] textarea",
+                trigger: "textarea.o_field_widget[name='reason']",
                 run: "text Tour ignore reason",
             },
 
