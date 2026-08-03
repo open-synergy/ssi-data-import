@@ -113,6 +113,22 @@
                             icon="fa-refresh"
                             attrs="{'invisible':[('state','!=','draft')]}"
                         />
+                    <button
+                            name="action_retry_all_problem_data"
+                            string="Retry All"
+                            type="object"
+                            class="oe_highlight"
+                            icon="fa-repeat"
+                            attrs="{'invisible':[('state','!=','queue_done')]}"
+                        />
+                    <button
+                            name="action_open_ignore_all_wizard"
+                            string="Ignore All"
+                            type="object"
+                            class="oe_highlight"
+                            icon="fa-ban"
+                            attrs="{'invisible':[('state','!=','queue_done')]}"
+                        />
                     <group name="import_data_counter" col="9">
                         <field name="num_of_data" />
                         <field name="num_of_matched" />
@@ -136,6 +152,27 @@
                             <field name="state" widget="badge" />
                             <field name="source_document_id" />
                             <field name="conflict_data_id" />
+                            <button
+                                    name="action_open_edit_wizard"
+                                    string="Edit"
+                                    type="object"
+                                    icon="fa-pencil"
+                                    attrs="{'invisible': [('state', 'not in', ['draft', 'error', 'no_match', 'multi_match', 'conflict', 'stale'])]}"
+                                />
+                            <button
+                                    name="action_retry"
+                                    string="Retry"
+                                    type="object"
+                                    icon="fa-repeat"
+                                    attrs="{'invisible': [('state', 'not in', ['draft', 'error', 'no_match', 'multi_match', 'conflict', 'stale'])]}"
+                                />
+                            <button
+                                    name="action_open_ignore_wizard"
+                                    string="Ignore"
+                                    type="object"
+                                    icon="fa-ban"
+                                    attrs="{'invisible': [('state', 'not in', ['draft', 'error', 'no_match', 'multi_match', 'conflict', 'stale'])]}"
+                                />
                         </tree>
                         <form>
                             <group>

@@ -25,9 +25,11 @@ time it changes.
    and moving it to Done, Error or Stale.
 2. Once the Done queue job batch finishes, `base.automation` re-checks the Pre-Condition
    above.
-3. If it holds, the document moves to Done automatically. If a line is still Error or
-   Stale, the document stays at Queue To Done — there is no button to force it past
-   this; see `10-cancel.md` and `01-create.md`'s Stale note to recover.
+3. If it holds, the document moves to Done automatically. If a line is still Draft,
+   Matched, Error or Stale, the document stays at Queue To Done — edit, retry, or ignore
+   the problem line(s) instead of starting over; see `14-handle-problem-data.md`. Cancel
+   and restart (see `10-cancel.md` and `01-create.md`'s Stale note) remains available
+   too.
 
 ## Post-Condition
 
