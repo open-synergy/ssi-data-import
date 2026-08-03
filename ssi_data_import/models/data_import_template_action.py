@@ -2,12 +2,38 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import ast
 import datetime
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
 from .data_import_common import check_dotted_path
+
+#: Default shown to the user when a new Action's Value Code/Key Code
+#: is left empty -- a bare expression (eval mode), documenting the
+#: variables available at both Resolve (Preview) and Apply time.
+_CODE_DEFAULT_EVAL = (
+    "# Available: env, document, row, value\n"
+    "# Apply only: record, target, line\n"
+    "value"
+)
+#: Default shown for a new Action's Vals Code -- same variables as
+#: ``_CODE_DEFAULT_EVAL``, but must resolve to a dict.
+_VALS_CODE_DEFAULT_EVAL = (
+    "# Available: env, document, row, value\n"
+    "# Apply only: record, target, line\n"
+    "# Must resolve to a dict of values.\n"
+    "{}"
+)
+#: Default shown for a new Action's Python Code -- exec mode
+#: statements, run only at Apply time (never previewed).
+_CODE_DEFAULT_EXEC = (
+    "# Available: env, document, row, value, record, target, line, "
+    "result\n"
+    "# Statements run directly against 'record'/'target'.\n"
+)
 
 
 class DataImportTemplateAction(models.Model):
@@ -22,6 +48,14 @@ class DataImportTemplateAction(models.Model):
     _name = "data_import_template.action"
     _description = "Data Import Template - Action"
     _order = "template_id, sequence"
+
+    #: Maps each eval-mode code field to the ``action_type`` values
+    #: that actually evaluate it, used by ``_check_eval_code_syntax``.
+    _EVAL_CODE_FIELDS = {
+        "value_code": ("write", "m2m_set"),
+        "key_code": ("o2m_upsert",),
+        "vals_code": ("o2m_upsert",),
+    }
 
     template_id = fields.Many2one(
         string="Template",
@@ -89,18 +123,23 @@ class DataImportTemplateAction(models.Model):
     )
     value_code = fields.Text(
         string="Value Code",
+        default=_CODE_DEFAULT_EVAL,
         help=(
             "Python expression that resolves to the value written by "
             "Write Field, or added/removed/replaced by Many2many Set. "
-            "Available variables:\n"
+            "Evaluated identically at Resolve (Preview) and Apply "
+            "time. Available variables:\n"
             "  - env, document, time, datetime, dateutil, timezone, "
             "float_compare, b64encode, b64decode\n"
             "  - row: dict of the current file row, keyed by column\n"
-            "  - value: raw value of Column in the current row"
+            "  - value: raw value of Column in the current row\n"
+            "  - record, target, line: only set while Apply runs -- "
+            "referencing them fails at Resolve (Preview) time"
         ),
     )
     key_code = fields.Text(
         string="Key Code",
+        default=_CODE_DEFAULT_EVAL,
         help=(
             "Python expression that resolves to the value used, "
             "together with Relation Field, to find an existing "
@@ -111,6 +150,7 @@ class DataImportTemplateAction(models.Model):
     )
     vals_code = fields.Text(
         string="Vals Code",
+        default=_VALS_CODE_DEFAULT_EVAL,
         help=(
             "Python expression that resolves to a dict of values "
             "written to the One2many line found (or created) by Key "
@@ -120,12 +160,20 @@ class DataImportTemplateAction(models.Model):
     )
     python_code = fields.Text(
         string="Python Code",
+        default=_CODE_DEFAULT_EXEC,
         help=(
             "Python statements run directly against the matched "
-            "record. Used by Python Code. Available variables:\n"
+            "record. Used by Python Code, only run at Apply time -- "
+            "never evaluated for Preview. Available variables:\n"
             "  - env, document, time, datetime, dateutil, timezone, "
             "float_compare, b64encode, b64decode\n"
-            "  - row: dict of the current file row, keyed by column"
+            "  - row: dict of the current file row, keyed by column\n"
+            "  - value: raw value of Column in the current row\n"
+            "  - record: resolved Target Model record\n"
+            "  - target: record resolved from Target Path\n"
+            "  - line: the data_import.data line being applied\n"
+            "  - result: available for consistency with other code "
+            "fields, but not read back by Apply"
         ),
     )
     m2m_mode = fields.Selection(
@@ -214,18 +262,31 @@ class DataImportTemplateAction(models.Model):
             value = self._eval_code(self.value_code, row)
         return self._jsonify(value)
 
-    def _eval_code(self, code, row):
-        """Evaluate a Value/Vals Code expression for ``row``.
+    def _eval_code(self, code, row, record=None, target=None, line=None):
+        """Evaluate a Value/Key/Vals Code expression for ``row``.
 
-        Called only while building Preview -- never while applying
-        changes to the Target Model. Available variables: ``env``,
-        ``document`` (the Template), ``time``, ``datetime``,
-        ``dateutil``, ``timezone``, ``float_compare``, ``b64encode``,
-        ``b64decode``, ``row`` and ``value`` (raw value of Column in
-        ``row``).
+        Called by Resolve while building Preview (``record``/
+        ``target``/``line`` left at their default ``None``) and,
+        with those three filled in, by Apply while writing to the
+        Target Model -- so the exact same expression is evaluated
+        the exact same way in both contexts, keeping Preview a
+        faithful preview of what Apply will write. Available
+        variables: ``env``, ``document`` (the Template), ``time``,
+        ``datetime``, ``dateutil``, ``timezone``, ``float_compare``,
+        ``b64encode``, ``b64decode``, ``row``, ``value`` (raw value
+        of Column in ``row``), and -- only when called by Apply --
+        ``record`` (matched/created Target Model record), ``target``
+        (record resolved from Target Path) and ``line`` (the
+        ``data_import.data`` line being applied).
 
         :param code: Python expression to evaluate, or empty
         :param row: dict of the current file row, keyed by Column
+        :param record: resolved Target Model record, only set by
+            Apply
+        :param target: resolved Target Path record, only set by
+            Apply
+        :param line: ``data_import.data`` line being applied, only
+            set by Apply
         :return: evaluated value, or ``None`` when ``code`` is empty
         """
         self.ensure_one()
@@ -233,6 +294,8 @@ class DataImportTemplateAction(models.Model):
             return None
         localdict = self.template_id._get_default_localdict()
         localdict.update({"row": row, "value": row.get(self.column)})
+        if record is not None:
+            localdict.update({"record": record, "target": target, "line": line})
         return safe_eval(code, localdict, mode="eval", nocopy=True)
 
     def _jsonify(self, value):
@@ -272,3 +335,174 @@ class DataImportTemplateAction(models.Model):
                 rec.target_path,
                 "Target Path",
             )
+
+    @api.constrains("value_code", "key_code", "vals_code", "action_type")
+    def _check_eval_code_syntax(self):
+        """Reject a Value/Key/Vals Code with invalid expression syntax.
+
+        Only checked for the field(s) actually evaluated by this
+        rule's ``action_type`` (e.g. Key Code only applies to
+        One2many Upsert), and only while non-empty.
+
+        :raises ValidationError: when the field's content does not
+            parse as a single Python expression
+        """
+        for rec in self:
+            for field_name, applicable_types in rec._EVAL_CODE_FIELDS.items():
+                if rec.action_type not in applicable_types:
+                    continue
+                code = getattr(rec, field_name)
+                if not code:
+                    continue
+                rec._check_code_syntax(code, field_name, "eval")
+
+    @api.constrains("python_code", "action_type")
+    def _check_python_code_syntax(self):
+        """Reject a Python Code with invalid statement syntax.
+
+        :raises ValidationError: when Python Code does not parse
+        """
+        for rec in self:
+            if rec.action_type != "python" or not rec.python_code:
+                continue
+            rec._check_code_syntax(rec.python_code, "python_code", "exec")
+
+    def _check_code_syntax(self, code, field_name, mode):
+        """Validate that ``code`` parses under ``mode``.
+
+        :param code: Python source to validate
+        :param field_name: technical field name, used in the error
+            message
+        :param mode: ``"eval"`` for a single expression, ``"exec"``
+            for statements
+        :raises ValidationError: when ``code`` has a syntax error
+        """
+        self.ensure_one()
+        try:
+            ast.parse(code, mode=mode)
+        except SyntaxError as error:
+            message = "%s has invalid Python syntax: %s" % (field_name, error)
+            raise ValidationError(_(message)) from error
+
+    def _apply(self, row, record, line):
+        """Apply this rule to ``record`` for ``line``, per ``action_type``.
+
+        Called by ``data_import.data._apply_existing`` for every
+        Action, in sequence order, inside a savepoint -- any
+        exception raised here (including ``UserError`` from
+        ``_apply_o2m_upsert``) propagates up to that savepoint and is
+        turned into this line's state Error.
+
+        :param row: dict of the current file row, keyed by Column
+        :param record: resolved Target Model record (matched or
+            newly created)
+        :param line: the ``data_import.data`` line being applied
+        :return: nothing
+        """
+        self.ensure_one()
+        if self.skip_if_empty and self.column and not row.get(self.column):
+            return
+        target = self._resolve_target_record(record)
+        if self.action_type == "write":
+            self._apply_write(row, record, target, line)
+        elif self.action_type == "o2m_upsert":
+            self._apply_o2m_upsert(row, record, target, line)
+        elif self.action_type == "m2m_set":
+            self._apply_m2m_set(row, record, target, line)
+        elif self.action_type == "python":
+            self._apply_python(row, record, target, line)
+
+    def _apply_write(self, row, record, target, line):
+        """Apply this Write Field rule to ``target``.
+
+        :param row: dict of the current file row, keyed by Column
+        :param record: resolved Target Model record
+        :param target: record resolved from Target Path (``record``
+            itself when Target Path is empty)
+        :param line: the ``data_import.data`` line being applied
+        :return: nothing
+        """
+        self.ensure_one()
+        value = self._eval_code(self.value_code, row, record, target, line)
+        target.write({self.field_name: value})
+
+    def _apply_o2m_upsert(self, row, record, target, line):
+        """Apply this One2many Upsert rule to ``target``.
+
+        Finds an existing line on ``target[self.field_name]`` whose
+        Relation Field equals Key Code's value and writes Vals Code
+        to it; creates a new line instead when none matches.
+
+        :param row: dict of the current file row, keyed by Column
+        :param record: resolved Target Model record
+        :param target: record resolved from Target Path
+        :param line: the ``data_import.data`` line being applied
+        :raises UserError: when Key Code's value matches more than
+            one existing line
+        :return: nothing
+        """
+        self.ensure_one()
+        key_value = self._eval_code(self.key_code, row, record, target, line)
+        vals = self._eval_code(self.vals_code, row, record, target, line) or {}
+        o2m = target[self.field_name]
+        matches = o2m.filtered_domain([(self.relation_field, "=", key_value)])
+        if len(matches) > 1:
+            error_message = """
+Context: Applying One2many Upsert action
+Problem: Key Code matched %d existing lines on field '%s'
+Solution: Adjust Key Code so it matches at most one line""" % (
+                len(matches),
+                self.field_name,
+            )
+            raise UserError(_(error_message))
+        if matches:
+            matches.write(vals)
+        else:
+            create_vals = dict(vals)
+            create_vals[self.relation_field] = key_value
+            target.write({self.field_name: [(0, 0, create_vals)]})
+
+    def _apply_m2m_set(self, row, record, target, line):
+        """Apply this Many2many Set rule to ``target``.
+
+        :param row: dict of the current file row, keyed by Column
+        :param record: resolved Target Model record
+        :param target: record resolved from Target Path
+        :param line: the ``data_import.data`` line being applied
+        :return: nothing
+        """
+        self.ensure_one()
+        value = self._eval_code(self.value_code, row, record, target, line)
+        ids = value.ids if isinstance(value, models.BaseModel) else (value or [])
+        command = {"add": 4, "remove": 3}.get(self.m2m_mode)
+        if command:
+            target.write({self.field_name: [(command, i) for i in ids]})
+        else:
+            target.write({self.field_name: [(6, 0, ids)]})
+
+    def _apply_python(self, row, record, target, line):
+        """Run Python Code (exec mode) directly against ``record``.
+
+        Unlike Write Field/One2many Upsert/Many2many Set, Python
+        Code is never evaluated while building Preview -- it only
+        ever runs here, at Apply time.
+
+        :param row: dict of the current file row, keyed by Column
+        :param record: resolved Target Model record
+        :param target: record resolved from Target Path
+        :param line: the ``data_import.data`` line being applied
+        :return: nothing
+        """
+        self.ensure_one()
+        localdict = self.template_id._get_default_localdict()
+        localdict.update(
+            {
+                "row": row,
+                "value": row.get(self.column),
+                "record": record,
+                "target": target,
+                "line": line,
+                "result": None,
+            }
+        )
+        safe_eval(self.python_code, localdict, mode="exec", nocopy=True)

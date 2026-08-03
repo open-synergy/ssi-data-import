@@ -23,6 +23,7 @@
         "ssi_source_document_mixin",
         "queue_job_batch",
         "ssi_web_widget_json",
+        "base_automation",
     ],
     "data": [
         "security/ir_module_category_data.xml",
@@ -35,6 +36,8 @@
         "sequence_template/data_import.xml",
         "approval_template/data_import.xml",
         "policy_template/data_import.xml",
+        "data/ir_actions_server_data.xml",
+        "data/base_automation_data.xml",
         "menu.xml",
         "views/data_import_template_views.xml",
         "views/data_import_views.xml",
