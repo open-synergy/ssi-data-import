@@ -2,11 +2,11 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import SavepointCase, tagged
 
 
 @tagged("post_install", "-at_install")
-class TestDataImportTemplateDelimiter(TransactionCase):
+class TestDataImportTemplateDelimiter(SavepointCase):
     """Test ``_get_delimiter_character`` return value for every choice."""
 
     @classmethod
