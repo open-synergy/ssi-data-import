@@ -51,4 +51,5 @@
     ],
     "demo": [],
     "external_dependencies": {"python": ["openpyxl", "xlrd"]},
+    "uninstall_hook": "uninstall_hook",
 }

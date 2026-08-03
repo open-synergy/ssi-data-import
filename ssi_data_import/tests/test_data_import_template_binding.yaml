@@ -1,0 +1,195 @@
+scenarios:
+  - name: "Create Template Registers Two Binding Actions"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+      - step: "Create template targeting res.partner"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template_a"
+        values:
+          name: "Binding Template A"
+          code: "/"
+          model_id: "REC: partner_model.id"
+      - step: "Exactly two bound actions exist for res.partner"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: partner_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "bound_actions_a"
+        expect_count: 2
+      - step: "Both actions are recorded on the template's binding_action_ids"
+        action: "assert"
+        target: "template_a"
+        asserts:
+          binding_action_ids:
+            type: "m2m"
+            check: "count"
+            expected_count: 2
+
+  - name: "Write Model Id Moves The Binding To The New Model"
+    steps:
+      - step: "Get res.partner.category model"
+        action: "ref"
+        xml_id: "base.model_res_partner_category"
+        save_as: "category_model"
+      - step: "Get res.partner.title model"
+        action: "ref"
+        xml_id: "base.model_res_partner_title"
+        save_as: "title_model"
+      - step: "Create template targeting res.partner.category"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template_b"
+        values:
+          name: "Binding Template B"
+          code: "/"
+          model_id: "REC: category_model.id"
+      - step: "Two bound actions exist for res.partner.category"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: category_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "category_actions_before"
+        expect_count: 2
+      - step: "Move the template to res.partner.title"
+        action: "write"
+        target: "template_b"
+        values:
+          model_id: "REC: title_model.id"
+      - step: "The res.partner.category binding is gone"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: category_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "category_actions_after"
+        expect_count: 0
+      - step: "Two bound actions now exist for res.partner.title"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: title_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "title_actions_after"
+        expect_count: 2
+      - step: "The template's binding_action_ids now points at the new pair"
+        action: "assert"
+        target: "template_b"
+        asserts:
+          binding_action_ids:
+            type: "m2m"
+            check: "count"
+            expected_count: 2
+
+  - name: "Unlink Last Template Removes The Binding"
+    steps:
+      - step: "Get res.country model"
+        action: "ref"
+        xml_id: "base.model_res_country"
+        save_as: "country_model"
+      - step: "Create template targeting res.country"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template_c"
+        values:
+          name: "Binding Template C"
+          code: "/"
+          model_id: "REC: country_model.id"
+      - step: "Two bound actions exist for res.country"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: country_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "country_actions_before"
+        expect_count: 2
+      - step: "Delete the only template targeting res.country"
+        action: "unlink"
+        target: "template_c"
+      - step: "No bound action is left for res.country"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: country_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "country_actions_after"
+        expect_count: 0
+
+  - name: "Unlink One Of Two Templates Keeps The Binding"
+    steps:
+      - step: "Get res.lang model"
+        action: "ref"
+        xml_id: "base.model_res_lang"
+        save_as: "lang_model"
+      - step: "Create first template targeting res.lang"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template_d1"
+        values:
+          name: "Binding Template D1"
+          code: "/"
+          model_id: "REC: lang_model.id"
+      - step: "Create second template also targeting res.lang"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template_d2"
+        values:
+          name: "Binding Template D2"
+          code: "/"
+          model_id: "REC: lang_model.id"
+      - step: "Still exactly two bound actions for res.lang, shared by both"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: lang_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "lang_actions_before"
+        expect_count: 2
+      - step: "Delete the first template only"
+        action: "unlink"
+        target: "template_d1"
+      - step: "The binding survives because the second template is still active"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: lang_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "lang_actions_after"
+        expect_count: 2
+      - step: "The surviving template still carries both actions"
+        action: "assert"
+        target: "template_d2"
+        asserts:
+          binding_action_ids:
+            type: "m2m"
+            check: "count"
+            expected_count: 2
+
+  - name: "Reject Transient Target Model Creates No Binding"
+    steps:
+      - step: "Get base.language.install model (transient)"
+        action: "ref"
+        xml_id: "base.model_base_language_install"
+        save_as: "transient_model"
+      - step: "Create template pointing to a transient model must fail"
+        action: "create"
+        model: "data_import_template"
+        expect_error:
+          type: "ValidationError"
+        values:
+          name: "Binding Template E"
+          code: "/"
+          model_id: "REC: transient_model.id"
+      - step: "No bound action was created for the transient model"
+        action: "search"
+        model: "ir.actions.act_window"
+        domain:
+          - ["binding_model_id", "=", "REC: transient_model.id"]
+          - ["res_model", "in", ["data_import", "data_import.data"]]
+        save_as: "transient_actions"
+        expect_count: 0

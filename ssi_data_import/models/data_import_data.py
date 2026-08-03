@@ -143,6 +143,30 @@ class DataImportData(models.Model):
         "error",
     )
 
+    def init(self):
+        """Ensure a composite index on the Source Document pointer.
+
+        Speeds up the Import History contextual action registered per
+        Target Model by ``data_import_template`` (see
+        ``_build_binding_action_vals``), whose domain filters on
+        exactly ``(source_document_model_id, source_document_res_id)``
+        together. Without this index, opening History on any record
+        scans the whole ``data_import.data`` table as it grows.
+
+        :return: nothing
+        """
+        super().init()
+        self._cr.execute(
+            "SELECT indexname FROM pg_indexes WHERE indexname = %s",
+            ("data_import_data_source_document_idx",),
+        )
+        if not self._cr.fetchone():
+            self._cr.execute(
+                "CREATE INDEX data_import_data_source_document_idx "
+                "ON data_import_data "
+                "(source_document_model_id, source_document_res_id)"
+            )
+
     def _resolve(self, template):
         """Read-only (re-)resolution of this line against ``template``.
 

@@ -21,6 +21,10 @@
                 type="text/javascript"
                 src="/ssi_data_import/static/tests/tours/data_import_handle_problem_row_tour.js"
             />
+        <script
+                type="text/javascript"
+                src="/ssi_data_import/static/tests/tours/data_import_history_tour.js"
+            />
     </xpath>
 </template>
 </odoo>
