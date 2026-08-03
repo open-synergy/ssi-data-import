@@ -13,6 +13,10 @@
                 type="text/javascript"
                 src="/ssi_data_import/static/tests/tours/data_import_template_tour.js"
             />
+        <script
+                type="text/javascript"
+                src="/ssi_data_import/static/tests/tours/data_import_tour.js"
+            />
     </xpath>
 </template>
 </odoo>

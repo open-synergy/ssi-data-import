@@ -94,6 +94,7 @@
                             <field name="skip_empty_lines" />
                             <field name="offset_row" />
                             <field name="offset_column" />
+                            <field name="date_format" />
                         </group>
                     </group>
                 </page>
