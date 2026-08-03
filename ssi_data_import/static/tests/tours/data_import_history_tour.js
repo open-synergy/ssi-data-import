@@ -40,11 +40,11 @@ odoo.define("ssi_data_import.data_import_history_tour", function (require) {
                 content: "Click Import History",
                 trigger: ".o_cp_action_menus .o_menu_item a",
                 run: function () {
-                    var $historyItem = $(
-                        ".o_cp_action_menus .o_menu_item a"
-                    ).filter(function () {
-                        return $(this).text().trim() === "Import History";
-                    });
+                    var $historyItem = $(".o_cp_action_menus .o_menu_item a").filter(
+                        function () {
+                            return $(this).text().trim() === "Import History";
+                        }
+                    );
                     $historyItem[0].click();
                 },
             },

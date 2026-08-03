@@ -2,9 +2,8 @@
 
 > **Module:** ssi_data_import\
 > **Model:** `data_import`\
-> **Menu:** *(none — reached from the Action menu of any record whose model is
-> configured as a Data Import Template's Target Model, e.g. Contacts > Customers for*
-> `res.partner`*)*\
+> **Menu:** none -- contextual action, reached from the Action menu of any record whose
+> model is a Data Import Template's Target Model\
 > **Actor:** user in group `Data Import - User` (`data_import_user_group`)
 
 This action is not opened from the Data Import module's own menu. It is a contextual
@@ -35,13 +34,13 @@ no `State:` is declared above.
   ever touched it, regardless of that document's own Status.
 - Each line's **State**, **Preview**, and (if any) **Error Message** are visible
   straight from this list -- this is the only place in the UI to see that history from
-  the record's own side, since a document's own **Import Data** tab
-  (`01-create.md`) only shows the lines belonging to that one document.
+  the record's own side, since a document's own **Import Data** tab (`01-create.md`)
+  only shows the lines belonging to that one document.
 
 ## Alternative Actions
 
-The same Action menu also carries **Start Import**, next to **Import History**, bound
-to this model's **list** view instead of its form view. It opens a new `data_import`
+The same Action menu also carries **Start Import**, next to **Import History**, bound to
+this model's **list** view instead of its form view. It opens a new `data_import`
 document (`01-create.md`) with **Template** pre-filtered to Templates targeting this
-model -- everything past that point is the same Create flow, there is no separate IK
-for it.
+model -- everything past that point is the same Create flow, there is no separate IK for
+it.
