@@ -5,3 +5,6 @@
 from . import test_data_import_template
 from . import test_data_import_template_delimiter
 from . import test_ui_data_import_template
+from . import test_data_import
+from . import test_data_import_load_data
+from . import test_ui_data_import

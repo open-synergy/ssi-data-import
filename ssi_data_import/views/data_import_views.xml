@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="data_import_view_search" model="ir.ui.view">
+    <field name="name">data_import - search</field>
+    <field name="model">data_import</field>
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="template_id" />
+                <field name="model_name" />
+                <field name="date" />
+                <filter
+                        name="filter_today"
+                        string="Today"
+                        domain="[('date','=',context_today().strftime('%Y-%m-%d'))]"
+                    />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter
+                            name="group_by_template"
+                            string="Template"
+                            context="{'group_by': 'template_id'}"
+                        />
+                    <filter
+                            name="group_by_date"
+                            string="Date"
+                            context="{'group_by': 'date:month'}"
+                        />
+                </group>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="data_import_view_tree" model="ir.ui.view">
+    <field name="name">data_import - tree</field>
+    <field name="model">data_import</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="date" />
+                <field name="template_id" />
+                <field name="model_name" />
+                <field name="num_of_data" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="data_import_view_form" model="ir.ui.view">
+    <field name="name">data_import - form</field>
+    <field name="model">data_import</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="template_id" />
+                <field name="model_id" invisible="1" />
+                <field name="model_name" invisible="1" />
+            </xpath>
+            <xpath expr="//group[@name='header_right']" position="inside">
+                <field name="date" />
+                <field name="import_file_name" invisible="1" />
+                <field
+                        name="import_file"
+                        filename="import_file_name"
+                        widget="binary"
+                        attrs="{'readonly': [('state','!=','draft')]}"
+                    />
+            </xpath>
+            <xpath expr="//page[1]" position="before">
+                <page name="import_data" string="Import Data">
+                    <button
+                            name="action_load_data"
+                            string="Load Data"
+                            type="object"
+                            class="oe_highlight"
+                            icon="fa-upload"
+                            attrs="{'invisible':[('state','!=','draft')]}"
+                        />
+                    <group name="import_data_counter" col="9">
+                        <field name="num_of_data" />
+                        <field name="num_of_matched" />
+                        <field name="num_of_no_match" />
+                        <field name="num_of_multi_match" />
+                        <field name="num_of_conflict" />
+                        <field name="num_of_stale" />
+                        <field name="num_of_error" />
+                        <field name="num_of_ignored" />
+                        <field name="num_of_done" />
+                    </group>
+                    <field name="data_ids">
+                        <tree>
+                            <field name="sequence" />
+                            <field name="data" widget="json_viewer" />
+                            <field name="state" />
+                            <field name="source_document_id" />
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="sequence" />
+                                    <field name="state" />
+                                    <field name="source_document_id" />
+                                </group>
+                            </group>
+                            <group string="Data">
+                                <field
+                                        name="data"
+                                        widget="json_viewer"
+                                        nolabel="1"
+                                        colspan="2"
+                                    />
+                            </group>
+                            <group
+                                    string="Error Message"
+                                    attrs="{'invisible': [('state','!=','error')]}"
+                                >
+                                <field name="error_message" nolabel="1" colspan="2" />
+                            </group>
+                            <group
+                                    string="Ignore Reason"
+                                    attrs="{'invisible': [('state','!=','ignored')]}"
+                                >
+                                <field name="ignore_reason" nolabel="1" colspan="2" />
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="data_import_action" model="ir.actions.act_window">
+    <field name="name">Data Imports</field>
+    <field name="res_model">data_import</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="data_import_menu"
+        name="Data Imports"
+        parent="menu_data_import_transaction"
+        action="data_import_action"
+        groups="data_import_viewer_group"
+        sequence="10"
+    />
+</odoo>

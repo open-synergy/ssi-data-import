@@ -113,6 +113,18 @@ class DataImportTemplate(models.Model):
         default=True,
         help="Skip blank rows when parsing the file.",
     )
+    date_format = fields.Char(
+        string="Date Format",
+        default="%Y-%m-%d",
+        help=(
+            "Python strftime() format used to turn a date/datetime "
+            "cell read from the source file into text before it is "
+            "stored as JSON (e.g. '%Y-%m-%d'). Only used for cells "
+            "that are an actual date/datetime value (as read by "
+            "openpyxl/xlrd); ignored for CSV files, whose cells are "
+            "already plain text."
+        ),
+    )
     offset_row = fields.Integer(
         string="Row Offset",
         default=0,

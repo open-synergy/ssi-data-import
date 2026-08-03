@@ -12,11 +12,17 @@ Odoo model: how the file is parsed, which model is targeted, the
 Matcher rules used to find the existing record a row corresponds to,
 and the Action rules applied once a match is found.
 
+Also defines ``data_import``, the transactional document that uploads
+an actual file, carries it through an approval workflow, and splits
+it into ``data_import.data`` lines (one JSON row each) using its
+Template's recipe.
+
 
 Work Instruction
 ================
 
 * `Create Data Import Template <docs/data_import_template/index.html>`_
+* `Create Data Import <docs/data_import/index.html>`_
 
 
 Installation
