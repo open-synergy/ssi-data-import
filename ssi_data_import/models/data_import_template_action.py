@@ -133,8 +133,7 @@ class DataImportTemplateAction(models.Model):
             ("replace", "Replace"),
         ],
         default="add",
-        help="How Value Code is applied to Field Name. Used by "
-        "Many2many Set.",
+        help="How Value Code is applied to Field Name. Used by " "Many2many Set.",
     )
     skip_if_empty = fields.Boolean(
         string="Skip If Empty",

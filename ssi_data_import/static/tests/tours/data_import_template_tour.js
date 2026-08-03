@@ -16,7 +16,8 @@ odoo.define("ssi_data_import.data_import_template_tour", function (require) {
             tour.stepUtils.showAppsMenuItem(),
             {
                 content: "Open the Data Import app",
-                trigger: '.o_app[data-menu-xmlid="ssi_data_import.menu_root_data_import"]',
+                trigger:
+                    '.o_app[data-menu-xmlid="ssi_data_import.menu_root_data_import"]',
             },
             {
                 content: "Open the Configuration menu",
@@ -123,7 +124,8 @@ odoo.define("ssi_data_import.data_import_template_tour", function (require) {
             // Post-Condition — the new record appears in the list
             {
                 content: "Back to the Data Import Templates list",
-                trigger: ".breadcrumb-item.o_back_button a:contains(Data Import Templates)",
+                trigger:
+                    ".breadcrumb-item.o_back_button a:contains(Data Import Templates)",
             },
             {
                 content: "The new record is visible in the list",

@@ -78,8 +78,7 @@ class DataImportTemplate(models.Model):
             ("iso-8859-1", "Western (Latin-1 / ISO 8859-1)"),
         ],
         default="utf-8",
-        help="Character encoding of the source file. Ignored for Excel "
-        "formats.",
+        help="Character encoding of the source file. Ignored for Excel " "formats.",
     )
     delimiter = fields.Selection(
         string="Delimiter",
@@ -91,8 +90,7 @@ class DataImportTemplate(models.Model):
             ("space", "space"),
         ],
         default="comma",
-        help="Field delimiter used in the source file. Ignored for "
-        "Excel formats.",
+        help="Field delimiter used in the source file. Ignored for " "Excel formats.",
     )
     quotechar = fields.Char(
         string="Text Qualifier",
@@ -123,8 +121,7 @@ class DataImportTemplate(models.Model):
     offset_column = fields.Integer(
         string="Column Offset",
         default=0,
-        help="Number of columns to skip from the left before parsing "
-        "starts.",
+        help="Number of columns to skip from the left before parsing " "starts.",
     )
 
     # --- Target ---
@@ -134,8 +131,7 @@ class DataImportTemplate(models.Model):
         comodel_name="ir.model",
         required=True,
         ondelete="cascade",
-        help="Odoo model that imported rows are matched and written "
-        "against.",
+        help="Odoo model that imported rows are matched and written " "against.",
     )
     model_name = fields.Char(
         string="Target Model Technical Name",
