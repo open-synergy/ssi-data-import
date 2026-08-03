@@ -16,10 +16,13 @@ class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
     line ends up matched with. Resolve (``data_import.action_resolve``)
     is the read-only, repeatable phase that finds that record using
     the Template's Matcher rules, fills ``preview``/``value_hash``,
-    and flags conflicting lines (Conflict/Stale/Error/Ignored are all
-    set by Resolve or its conflict checks); actually applying the
-    previewed changes to the Target Model is implemented by a later
-    module.
+    and flags conflicting lines (Conflict/Ignored are set by Resolve
+    or its conflict checks). Apply (``_apply``, run from the queue
+    job fanned out by ``data_import._10_enqueue_data_apply_jobs`` on
+    Queue Done) writes each Matched line's Preview to the Target
+    Model -- gated by a staleness check against ``value_hash`` (state
+    Stale on mismatch) and wrapped in a savepoint so a failure never
+    leaves a partial write (state Error) nor stops the batch.
     """
 
     _name = "data_import.data"
@@ -359,4 +362,102 @@ class DataImportData(models.Model):  # pylint: disable=too-few-public-methods
         ) % (other.import_id.name or other.import_id.id)
         self.error_message = (
             "%s\n%s" % (self.error_message, warning) if self.error_message else warning
+        )
+
+    # -------------------------------------------------------------------
+    # Apply -- queue job entry point (data_import._10_enqueue_data_apply)
+    # -------------------------------------------------------------------
+
+    def _apply(self):
+        """Apply this line's Preview to the Target Model.
+
+        Entry point of the per-line queue job created by
+        ``data_import._10_enqueue_data_apply_jobs``. Wrapped in a
+        database savepoint and never raises: any exception from
+        ``_apply_action`` (including one raised by an Action's
+        ``_apply``) is caught here and stored as state Error, so the
+        enclosing queue job always reaches state Done -- letting the
+        batch (and this document's auto-completion) proceed even
+        when this line failed.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        try:
+            with self.env.cr.savepoint():
+                self._apply_action()
+        except Exception as error:  # pylint: disable=broad-except
+            self.write({"state": "error", "error_message": str(error)})
+
+    def _apply_action(self):
+        """Apply this line, gated by a staleness check on existing targets.
+
+        Called inside ``_apply``'s savepoint. A line with no existing
+        Target Model record yet (``source_document_res_id`` is ``0``
+        -- Resolve matched it by Template's On No Match = Create
+        Record) always applies: there is nothing it could have gone
+        stale against. A line with an existing target recomputes a
+        fresh Preview against it and compares the fingerprint of its
+        ``before`` values (the same computation Resolve itself used)
+        against the stored ``value_hash``; a mismatch means the
+        target changed since Resolve, so this line moves to state
+        Stale and nothing is written.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        template = self.import_id.template_id
+        row = json.loads(self.data or "{}")
+        if not self.source_document_res_id:
+            self._apply_create(template, row)
+            return
+        record = self.env[template.model_name].browse(self.source_document_res_id)
+        if not record.exists():
+            self.write(
+                {
+                    "state": "stale",
+                    "error_message": _(
+                        "Target record no longer exists; re-run Resolve " "to continue."
+                    ),
+                }
+            )
+            return
+        current_preview = self._build_preview(template, row, record)
+        current_hash = self._compute_value_hash(current_preview)
+        if current_hash != self.value_hash:
+            self.write(
+                {
+                    "state": "stale",
+                    "error_message": _(
+                        "Target record changed since Resolve; re-run "
+                        "Resolve to continue."
+                    ),
+                }
+            )
+            return
+        for action in template.action_ids.sorted("sequence"):
+            action._apply(row, record, self)
+        self.write({"state": "done", "error_message": False})
+
+    def _apply_create(self, template, row):
+        """Create the Target Model record for an On No Match = Create line.
+
+        Mirrors ``data_import_template._eval_create_vals``, the same
+        method Resolve used to preview this line's ``"create"`` key
+        -- there is no staleness check here since, before this call,
+        the record did not exist yet.
+
+        :param template: the ``data_import_template`` in use
+        :param row: dict of the current file row, keyed by Column
+        :return: nothing
+        """
+        self.ensure_one()
+        create_vals = template._eval_create_vals(row)
+        new_record = self.env[template.model_name].create(create_vals)
+        self.write(
+            {
+                "state": "done",
+                "source_document_res_id": new_record.id,
+                "error_message": False,
+            }
         )

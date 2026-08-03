@@ -69,6 +69,21 @@
                 <field name="model_id" invisible="1" />
                 <field name="model_name" invisible="1" />
             </xpath>
+            <xpath expr="//div[@name='button_box']" position="after">
+                <div
+                        class="alert alert-warning"
+                        role="alert"
+                        attrs="{'invisible': [('state', 'not in', ['queue_done', 'done'])]}"
+                    >
+                    <strong>Warning:</strong>
+                    Cancelling this document does
+                    <strong>not</strong>
+                    undo changes already applied to Target Model records.
+                    Data lines already in state
+                    <strong>Done</strong>
+                    keep their applied changes even after Cancel.
+                </div>
+            </xpath>
             <xpath expr="//group[@name='header_right']" position="inside">
                 <field name="date" />
                 <field name="import_file_name" invisible="1" />
@@ -133,6 +148,7 @@
                                             attrs="{'invisible': [('state','!=','conflict')]}"
                                         />
                                     <field name="value_hash" />
+                                    <field name="queue_job_id" />
                                 </group>
                             </group>
                             <group string="Data">
@@ -153,7 +169,7 @@
                             </group>
                             <group
                                     string="Error Message"
-                                    attrs="{'invisible': [('state','!=','error')]}"
+                                    attrs="{'invisible': [('state','not in',['error','stale'])]}"
                                 >
                                 <field name="error_message" nolabel="1" colspan="2" />
                             </group>

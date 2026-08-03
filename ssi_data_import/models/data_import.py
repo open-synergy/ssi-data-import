@@ -23,13 +23,19 @@ class DataImport(models.Model):  # pylint: disable=too-few-public-methods
     Transactional document that uploads a third-party file and, using
     the recipe stored on its ``data_import_template``, splits it into
     ``data_import.data`` lines -- one per source row, stored as JSON.
-    Finding the Target Model record each line corresponds to and
-    applying changes to it are implemented by later modules; this
-    model only owns the upload, the approval workflow and the raw
-    parsing step.
+    Resolve (still owned by this model) finds each line's Target
+    Model record and builds a Preview; on Queue Done,
+    ``_10_enqueue_data_apply_jobs`` fans out one queue job per
+    Matched line to actually write it (``data_import.data._apply``).
+    Done is only reached once every line has left Draft/Matched/
+    Error/Stale -- see ``_check_data_apply_complete``, checked both
+    right after Queue Done (when Apply enqueued no job) and by this
+    module's ``base.automation`` once the Done queue job batch
+    finishes.
 
     Lifecycle: draft -> confirm -> queue_done -> done
-    Cancellation: queue_cancel -> cancel
+    Cancellation: queue_cancel -> cancel (never touches Target Model
+    records already written by Apply -- there is no rollback)
     """
 
     _name = "data_import"
@@ -654,6 +660,79 @@ Solution: Review the Conflict lines in the Import Data tab and re-run Resolve"""
                 len(conflict_lines),
             )
             raise UserError(_(error_message))
+
+    @ssi_decorator.post_queue_done_action()
+    def _10_enqueue_data_apply_jobs(self):
+        """Fan out one queue job per Matched Data line, on Queue Done.
+
+        Runs inside ``action_queue_done``, right after the document's
+        Done queue job batch (``done_queue_job_batch_id``) is
+        created. Only lines already Matched by Resolve carry a
+        Preview to apply -- No Match, Multiple Matches, Conflict,
+        Ignored and Error lines are left untouched here, since none
+        of them has one to apply. There is deliberately no matching
+        ``post_queue_cancel_action`` hook: Cancel never touches
+        ``data_ids`` (see the module's Keputusan Desain).
+
+        :return: nothing
+        """
+        self.ensure_one()
+        lines = self.data_ids.filtered(lambda d: d.state == "matched")
+        for line in lines:
+            description = "Apply data import line ID %s" % line.id
+            job = (
+                line.with_context(job_batch=self.done_queue_job_batch_id)
+                .with_delay(description=_(description))
+                ._apply()
+            )
+            line.queue_job_id = job.db_record().id
+
+    def _set_done_if_no_job(self):
+        """Complete Done immediately when Apply enqueued no job.
+
+        Overrides ``mixin.transaction_queue_done``'s unconditional
+        version (which reaches Done as soon as there is no queue
+        job at all): Done is only reached here when, in addition,
+        no Data line is left Draft, Matched, Error or Stale -- lines
+        Resolve could not settle (e.g. a Required matcher's Column
+        was empty) must not silently let the document reach Done
+        just because Apply had nothing to enqueue.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        if not self.done_queue_job_ids and self._check_data_apply_complete():
+            self.action_done()
+
+    def _recompute_queue_done_result(self):
+        """Recompute the Done batch, completing Done once settled.
+
+        Overrides ``mixin.transaction_queue_done``'s version, called
+        by ``action_recompute_queue_done_result`` -- itself invoked
+        by this module's ``base.automation`` whenever
+        ``done_queue_job_batch_state`` becomes Finished -- to also
+        require every Data line to have left Draft/Matched/Error/
+        Stale before Done is reached.
+
+        :return: nothing
+        """
+        self.ensure_one()
+        self.done_queue_job_batch_id.enqueue()
+        if (
+            self.done_queue_job_batch_state == "finished"
+            and self._check_data_apply_complete()
+        ):
+            self.action_done()
+
+    def _check_data_apply_complete(self):
+        """Return whether every Data line has settled for Done.
+
+        :return: ``True`` when ``data_ids`` has no line left in
+            state Draft, Matched, Error or Stale
+        """
+        self.ensure_one()
+        blocking_states = ("draft", "matched", "error", "stale")
+        return not self.data_ids.filtered(lambda d: d.state in blocking_states)
 
     @ssi_decorator.insert_on_form_view()
     def _insert_form_element(self, view_arch):

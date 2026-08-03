@@ -47,6 +47,12 @@
      found no Target Model record and the Template is configured to error. Resolve also
      runs automatically right before Confirm, so reviewing it here is optional but
      recommended — Confirm still fails on any Conflict line left unresolved.
+   - **Stale** (red): only appears after Queue To Done, on a line whose Target Model
+     record was changed by someone else after its Preview was built — Apply detects this
+     and refuses to overwrite the newer value. A Stale line is never produced by Resolve
+     itself. To fix it: **Cancel** the document (see `10-cancel.md`), **Restart** it
+     back to Draft, then run **Resolve** again — it re-evaluates every Stale (and Error)
+     line from scratch, leaving lines already Done untouched.
 
 ## Post-Condition
 

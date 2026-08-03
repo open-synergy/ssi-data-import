@@ -1,0 +1,501 @@
+scenarios:
+  - name: "Apply Writes Field And Completes Document"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Apply Partner One"
+          vat: "APPLYV001"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Apply Template One"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - action_type: "write"
+                field_name: "name"
+                column: "name"
+                value_code: "value"
+                skip_if_empty: false
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "APPLYV001", "name": "Applied New Name"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Assert line matched"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "matched"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Approve (fan-out job runs synchronously)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert document reached Done"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+      - step: "Assert line reached Done"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+      - step: "Assert target partner was written"
+        action: "assert"
+        target: "partner"
+        asserts:
+          name:
+            type: "value"
+            expected: "Applied New Name"
+
+  - name: "Apply Detects Stale Target And Does Not Overwrite"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Apply Partner Two"
+          vat: "APPLYV002"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Apply Template Two"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - action_type: "write"
+                field_name: "name"
+                column: "name"
+                value_code: "value"
+                skip_if_empty: false
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "APPLYV002", "name": "Name From File"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Simulate another process changing the target after Resolve"
+        action: "write"
+        target: "partner"
+        values:
+          name: "Changed By Someone Else"
+      - step: "Approve (fan-out job runs synchronously)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert line moved to Stale"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "stale"
+          error_message:
+            type: "value"
+            operator: "is_truthy"
+      - step: "Assert target keeps the externally-written value"
+        action: "assert"
+        target: "partner"
+        asserts:
+          name:
+            type: "value"
+            expected: "Changed By Someone Else"
+      - step: "Assert document stays Queue To Done (not Done)"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "queue_done"
+
+  - name: "Apply Rolls Back The Whole Savepoint On Failure"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Apply Partner Three"
+          vat: "APPLYV003"
+      - step: "Create template with a Write action then a failing Python action"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Apply Template Three"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - sequence: 10
+                action_type: "write"
+                field_name: "name"
+                column: "name"
+                value_code: "value"
+                skip_if_empty: false
+            - - 0
+              - 0
+              - sequence: 20
+                action_type: "python"
+                python_code: "raise ValueError('Deliberate failure for testing')"
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "APPLYV003", "name": "Should Not Stick"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Approve (fan-out job runs synchronously, and fails)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert line moved to Error"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "error"
+          error_message:
+            type: "value"
+            operator: "contains"
+            expected: "Deliberate failure"
+      - step: "Assert the earlier Write action was rolled back too"
+        action: "assert"
+        target: "partner"
+        asserts:
+          name:
+            type: "value"
+            expected: "Apply Partner Three"
+      - step: "Assert document stays Queue To Done (not Done)"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "queue_done"
+
+  - name: "One2many Upsert Matching Two Lines Is An Error"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Apply Partner Four"
+          vat: "APPLYV004"
+      - step: "Create first existing Invoice contact"
+        action: "create"
+        model: "res.partner"
+        save_as: "child_one"
+        values:
+          name: "Invoice Contact One"
+          type: "invoice"
+          parent_id: "REC: partner.id"
+      - step: "Create second existing Invoice contact"
+        action: "create"
+        model: "res.partner"
+        save_as: "child_two"
+        values:
+          name: "Invoice Contact Two"
+          type: "invoice"
+          parent_id: "REC: partner.id"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Apply Template Four"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - action_type: "o2m_upsert"
+                field_name: "child_ids"
+                relation_field: "type"
+                column: "child_name"
+                key_code: "'invoice'"
+                vals_code: "{'name': value, 'type': 'invoice'}"
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "APPLYV004", "child_name": "Updated Invoice Contact"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Approve (fan-out job runs synchronously, and fails)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert line moved to Error"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "error"
+
+  - name: "Cancel After Done Does Not Revert The Target"
+    steps:
+      - step: "Create target partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Apply Partner Five"
+          vat: "APPLYV005"
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Apply Template Five"
+          code: "/"
+          model_id: "REF: base.model_res_partner"
+          on_no_match: "error"
+          on_multi_match: "error"
+          matcher_ids:
+            - - 0
+              - 0
+              - field_path: "vat"
+                column: "vat"
+                operator: "="
+                required: true
+          action_ids:
+            - - 0
+              - 0
+              - action_type: "write"
+                field_name: "name"
+                column: "name"
+                value_code: "value"
+                skip_if_empty: false
+      - step: "Create document"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+      - step: "Create data line"
+        action: "create"
+        model: "data_import.data"
+        save_as: "line"
+        values:
+          import_id: "REC: document.id"
+          sequence: 10
+          data: '{"vat": "APPLYV005", "name": "Name Applied Before Cancel"}'
+      - step: "Resolve"
+        action: "call"
+        target: "document"
+        method: "action_resolve"
+      - step: "Confirm"
+        action: "call"
+        target: "document"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+      - step: "Approve (fan-out job runs synchronously)"
+        action: "call"
+        target: "document"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert document reached Done"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+      - step: "Cancel the Done document (bypasses the reason wizard here)"
+        action: "call"
+        target: "document"
+        method: "action_queue_cancel"
+        as_user: "base.user_admin"
+        context:
+          queue_job__no_delay: true
+      - step: "Invalidate cache after cancel"
+        action: "call"
+        target: "document"
+        method: "invalidate_cache"
+      - step: "Assert document reached Cancel"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "cancel"
+      - step: "Assert target keeps the applied value after Cancel"
+        action: "assert"
+        target: "partner"
+        asserts:
+          name:
+            type: "value"
+            expected: "Name Applied Before Cancel"
+      - step: "Assert the Done Data line was not reverted"
+        action: "assert"
+        target: "line"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
