@@ -22,6 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [ssi_data_import](ssi_data_import/) | 14.0.1.6.0 |  | Data Import
+[ssi_data_import_operating_unit](ssi_data_import_operating_unit/) | 14.0.1.0.0 |  | Data Import - Operating Unit Integration
 
 [//]: # (end addons)
 
