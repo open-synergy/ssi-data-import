@@ -1,0 +1,65 @@
+scenarios:
+  - name: "Data Import - Explicit Operating Unit"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Import Template OU A"
+          code: "/"
+          model_id: "REC: partner_model.id"
+
+      - step: "Create data_import with an explicit operating unit"
+        action: "create"
+        model: "data_import"
+        save_as: "document"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+          operating_unit_id: "REF: operating_unit.main_operating_unit"
+
+      - step: "Assert operating_unit_id is the one supplied"
+        action: "assert"
+        target: "document"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected_xml_id: "operating_unit.main_operating_unit"
+
+  - name: "Data Import - Operating Unit Defaults From User"
+    steps:
+      - step: "Get res.partner model"
+        action: "ref"
+        xml_id: "base.model_res_partner"
+        save_as: "partner_model"
+
+      - step: "Create template"
+        action: "create"
+        model: "data_import_template"
+        save_as: "template"
+        values:
+          name: "Import Template OU B"
+          code: "/"
+          model_id: "REC: partner_model.id"
+
+      - step: "Create data_import without an explicit operating unit"
+        action: "create"
+        model: "data_import"
+        save_as: "document_default_ou"
+        as_user: "base.user_admin"
+        values:
+          template_id: "REC: template.id"
+
+      - step: "Assert operating_unit_id defaulted from the user"
+        action: "assert"
+        target: "document_default_ou"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected_xml_id: "operating_unit.main_operating_unit"
