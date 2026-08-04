@@ -26,6 +26,11 @@ msgid "# Data"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_ir_model__data_import_template_count
+msgid "# Data Import Templates"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__name
 msgid "# Document"
 msgstr ""
@@ -222,6 +227,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_attachment_count
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_attachment_count
 msgid "Attachment Count"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__binding_action_ids
+msgid "Binding Actions"
 msgstr ""
 
 #. module: ssi_data_import
@@ -496,7 +506,9 @@ msgstr ""
 #: model:ir.model.fields,help:ssi_data_import.field_data_import__template_id
 msgid ""
 "Data Import Template whose recipe is used to parse Import File: file format,"
-" offsets, and the Target Model below."
+" offsets, and the Target Model below. When this document is created from a "
+"Target Model's Start Import contextual action, the choices are pre-filtered "
+"to Templates targeting that model."
 msgstr ""
 
 #. module: ssi_data_import
@@ -553,6 +565,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__display_name
 #: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__display_name
+#: model:ir.model.fields,field_description:ssi_data_import.field_ir_model__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -760,6 +773,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error__id
 #: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row__id
+#: model:ir.model.fields,field_description:ssi_data_import.field_ir_model__id
 msgid "ID"
 msgstr ""
 
@@ -857,6 +871,17 @@ msgid "Import File"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__binding_action_ids
+msgid ""
+"Import History and Start Import contextual actions bound to Target Model's "
+"Action menu, shared by every active Template targeting the same Target "
+"Model. Kept in sync automatically on create/write/unlink of any Template; "
+"use Target Model's Resync Data Import Binding action (on Settings > "
+"Technical > Database Structure > Models) to repair it after manual "
+"interference (e.g. one of the two actions deleted by hand)."
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__sheet_selector__index
 msgid "Index"
 msgstr ""
@@ -891,6 +916,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_edit_data_import_row____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_error____last_update
 #: model:ir.model.fields,field_description:ssi_data_import.field_ignore_data_import_row____last_update
+#: model:ir.model.fields,field_description:ssi_data_import.field_ir_model____last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -994,6 +1020,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import__message_ids
 #: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__message_ids
 msgid "Messages"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model,name:ssi_data_import.model_ir_model
+msgid "Models"
 msgstr ""
 
 #. module: ssi_data_import
@@ -1115,6 +1146,11 @@ msgstr ""
 #. module: ssi_data_import
 #: model:ir.model.fields,help:ssi_data_import.field_data_import__num_of_stale
 msgid "Number of Data lines currently in state Stale."
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_ir_model__data_import_template_count
+msgid "Number of active Data Import Templates targeting this model."
 msgstr ""
 
 #. module: ssi_data_import
