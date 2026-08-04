@@ -38,9 +38,7 @@ class TestDataImportOperatingUnit(YamlTransactionCase):
                 "model_id": partner_model.id,
             }
         )
-        last_ou = self.env["operating.unit"].search(
-            [], order="id desc", limit=1
-        )
+        last_ou = self.env["operating.unit"].search([], order="id desc", limit=1)
         bogus_operating_unit_id = last_ou.id + 1000000
         with mute_logger("odoo.sql_db"), self.assertRaises(IntegrityError):
             with self.cr.savepoint():
