@@ -21,8 +21,28 @@ Template's recipe.
 Work Instruction
 ================
 
-* `Create Data Import Template <docs/data_import_template/index.html>`_
-* `Create Data Import <docs/data_import/index.html>`_
+Data Import Template
+--------------------
+
+* `Create Data Import Template <docs/data_import_template/01-create.html>`_
+
+Data Import
+-----------
+
+* `Create Data Import <docs/data_import/01-create.html>`_
+* `Edit Data Import <docs/data_import/02-edit.html>`_
+* `Delete Data Import <docs/data_import/03-delete.html>`_
+* `Confirm Data Import <docs/data_import/04-confirm.html>`_
+* `Approve Data Import <docs/data_import/05-approve.html>`_
+* `Reject Data Import <docs/data_import/06-reject.html>`_
+* `Finish Data Import <docs/data_import/09-finish.html>`_
+* `Cancel Data Import <docs/data_import/10-cancel.html>`_
+* `Restart Data Import <docs/data_import/12-restart.html>`_
+* `Reset Document Number - Data Import <docs/data_import/13-reset-number.html>`_
+* `Handle Problem Data Import Rows <docs/data_import/14-handle-problem-data.html>`_
+* `View Import History <docs/data_import/15-view-import-history.html>`_
+* `Restart Approval Process - Data Import <docs/data_import/16-restart-approval.html>`_
+* `Reload Template Policy - Data Import <docs/data_import/17-reload-template-policy.html>`_
 
 
 Installation
