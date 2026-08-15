@@ -12,6 +12,12 @@ restricts access to those documents based on the operating units assigned to
 the user.
 
 
+Work Instruction
+================
+
+* `Create Data Import <docs/data_import/index.html>`_
+
+
 Bug Tracker
 ===========
 
