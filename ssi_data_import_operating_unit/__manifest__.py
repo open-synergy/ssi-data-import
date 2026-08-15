@@ -15,11 +15,13 @@
     "depends": [
         "ssi_data_import",
         "ssi_operating_unit_mixin",
+        "web_tour",
     ],
     "data": [
         "security/res_group/data_import.xml",
         "security/ir_rule/data_import.xml",
         "views/data_import.xml",
+        "views/assets.xml",
     ],
     "demo": [],
 }
