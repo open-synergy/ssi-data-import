@@ -29,7 +29,7 @@ automatic Status change as a side effect: see Post-Condition.
 3. On the **Import Data** tab, locate a problem Data line by its **State** badge.
 4. Click **Ignore** on that row.
 5. In the dialog that appears, fill in **Reason** explaining why the line is skipped.
-6. Click **Save**.
+6. Click **Save** (`action_confirm`) in the dialog footer.
 
 ## Post-Condition
 
