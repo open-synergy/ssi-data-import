@@ -64,6 +64,26 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
                 },
             },
 
+            // Gerbang penstabil (issue #11): the statusbar status widget
+            // ("state" field) is wrapped by the same legacy
+            // FieldWrapper.updateModifiersValue implicated in the CI
+            // race ("TypeError: Cannot set properties of null (setting
+            // 'props')"). Waiting for it to settle on Draft here proves
+            // that widget has finished mounting/applying its modifiers
+            // BEFORE the next step edits a field and triggers an
+            // onchange-driven re-render across the whole form -- the
+            // re-render is what raced against a still-mounting widget.
+            {
+                content:
+                    "Statusbar widget has settled on Draft (safe to edit fields now)",
+                trigger:
+                    ".o_statusbar_status .o_arrow_button[data-value='draft'].btn-primary",
+                extra_trigger: ".o_form_view.o_form_editable",
+                run: function () {
+                    // Assertion only; do not trigger the default click action.
+                },
+            },
+
             // Flow 3 — Fill in the required fields (Date keeps its default;
             // Import File is not uploaded -- see comment above)
             {
@@ -190,6 +210,24 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
                 },
             },
 
+            // Gerbang penstabil (issue #11): wait for the statusbar status
+            // widget -- rendered through the same legacy
+            // FieldWrapper.updateModifiersValue implicated in the CI race
+            // ("Cannot set properties of null (setting 'props')") -- to
+            // settle on Draft (this document's known Pre-Condition state)
+            // BEFORE clicking Confirm. Confirm triggers a full-form
+            // re-render; clicking before this widget finished
+            // mounting/applying its modifiers is what raced.
+            {
+                content: "Statusbar widget has settled on Draft",
+                trigger:
+                    ".o_statusbar_status .o_arrow_button[data-value='draft'].btn-primary",
+                extra_trigger: ".o_form_view",
+                run: function () {
+                    // Assertion only; do not trigger the default click action.
+                },
+            },
+
             // Flow 3 — Click the Confirm button
             {
                 content: "Click the Confirm button",
@@ -274,6 +312,25 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
                 },
             },
 
+            // Gerbang penstabil (issue #11): wait for the statusbar status
+            // widget -- rendered through the same legacy
+            // FieldWrapper.updateModifiersValue implicated in the CI race
+            // ("Cannot set properties of null (setting 'props')") -- to
+            // settle on Waiting for Approval (this document's known
+            // Pre-Condition state, set via action_confirm() in
+            // setUpClass) BEFORE clicking Approve. Approve triggers a
+            // full-form re-render; clicking before this widget finished
+            // mounting/applying its modifiers is what raced.
+            {
+                content: "Statusbar widget has settled on Waiting for Approval",
+                trigger:
+                    ".o_statusbar_status .o_arrow_button[data-value='confirm'].btn-primary",
+                extra_trigger: ".o_form_view",
+                run: function () {
+                    // Assertion only; do not trigger the default click action.
+                },
+            },
+
             // Flow 3 — Click the Approve button
             {
                 content: "Click the Approve button",
@@ -350,6 +407,25 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             {
                 content: "Form is open",
                 trigger: ".o_form_view",
+                run: function () {
+                    // Assertion only; do not trigger the default click action.
+                },
+            },
+
+            // Gerbang penstabil (issue #11): wait for the statusbar status
+            // widget -- rendered through the same legacy
+            // FieldWrapper.updateModifiersValue implicated in the CI race
+            // ("Cannot set properties of null (setting 'props')") -- to
+            // settle on Done (this document's known Pre-Condition state,
+            // reached via action_confirm() + action_approve_approval() in
+            // setUpClass) BEFORE clicking Cancel. Cancel triggers a
+            // full-form re-render; clicking before this widget finished
+            // mounting/applying its modifiers is what raced.
+            {
+                content: "Statusbar widget has settled on Done",
+                trigger:
+                    ".o_statusbar_status .o_arrow_button[data-value='done'].btn-primary",
+                extra_trigger: ".o_form_view",
                 run: function () {
                     // Assertion only; do not trigger the default click action.
                 },
