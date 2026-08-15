@@ -270,6 +270,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -364,6 +375,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
+        target: "document"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Approve (fan-out jobs run synchronously, and fail)"
         action: "call"
         target: "document"
