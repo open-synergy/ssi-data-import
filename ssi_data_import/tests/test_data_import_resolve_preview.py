@@ -4,11 +4,13 @@
 
 import json
 
-from odoo.tests import SavepointCase, tagged
+from odoo_yaml_test import YamlTransactionCase
+
+from odoo.tests import tagged
 
 
 @tagged("post_install", "-at_install")
-class TestDataImportResolvePreview(SavepointCase):
+class TestDataImportResolvePreview(YamlTransactionCase):
     """Python-only scenario for Resolve's ``preview`` JSON payload.
 
     P4/L-07: ``preview`` is stored as a JSON-encoded ``Text`` field,
@@ -18,8 +20,7 @@ class TestDataImportResolvePreview(SavepointCase):
     dict.
     """
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """Create a partner, a one-Action Template, and one Data line.
 
         The Template's single Write Field action targets the
@@ -27,15 +28,15 @@ class TestDataImportResolvePreview(SavepointCase):
         its current value (``before``) and the value read from the
         row (``after``).
         """
-        super().setUpClass()
-        cls.partner = cls.env["res.partner"].create(
+        super().setUp()
+        self.partner = self.env["res.partner"].create(
             {"name": "Preview Partner", "vat": "RESOLVEPREVIEW001"}
         )
-        cls.template = cls.env["data_import_template"].create(
+        self.template = self.env["data_import_template"].create(
             {
                 "name": "Preview Template",
                 "code": "/",
-                "model_id": cls.env.ref("base.model_res_partner").id,
+                "model_id": self.env.ref("base.model_res_partner").id,
                 "on_no_match": "error",
                 "on_multi_match": "error",
                 "matcher_ids": [
@@ -65,10 +66,12 @@ class TestDataImportResolvePreview(SavepointCase):
                 ],
             }
         )
-        cls.document = cls.env["data_import"].create({"template_id": cls.template.id})
-        cls.line = cls.env["data_import.data"].create(
+        self.document = self.env["data_import"].create(
+            {"template_id": self.template.id}
+        )
+        self.line = self.env["data_import.data"].create(
             {
-                "import_id": cls.document.id,
+                "import_id": self.document.id,
                 "sequence": 10,
                 "data": json.dumps({"vat": "RESOLVEPREVIEW001", "name": "New Name"}),
             }

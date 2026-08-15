@@ -1,3 +1,6 @@
+options:
+  auto_refresh: true
+
 scenarios:
   - name: "Edit Wizard Fixes Error Row And Returns It To Draft"
     steps:
@@ -267,10 +270,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -278,10 +277,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line reached Done"
         action: "assert"
         target: "line"
@@ -369,10 +364,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Approve (fan-out jobs run synchronously, and fail)"
         action: "call"
         target: "document"
@@ -380,10 +371,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert both lines reached Error"
         action: "assert"
         target: "line_one"

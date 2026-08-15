@@ -1,3 +1,6 @@
+options:
+  auto_refresh: true
+
 scenarios:
   - name: "Apply Writes Field And Completes Document"
     steps:
@@ -64,10 +67,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -75,10 +74,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert document reached Done"
         action: "assert"
         target: "document"
@@ -159,10 +154,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Simulate another process changing the target after Resolve"
         action: "write"
         target: "partner"
@@ -175,10 +166,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line moved to Stale"
         action: "assert"
         target: "line"
@@ -268,10 +255,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously, and fails)"
         action: "call"
         target: "document"
@@ -279,10 +262,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line moved to Error"
         action: "assert"
         target: "line"
@@ -384,10 +363,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously, and fails)"
         action: "call"
         target: "document"
@@ -395,10 +370,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line moved to Error"
         action: "assert"
         target: "line"
@@ -465,10 +436,6 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -476,10 +443,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert document reached Done"
         action: "assert"
         target: "document"
@@ -494,10 +457,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after cancel"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert document reached Cancel"
         action: "assert"
         target: "document"

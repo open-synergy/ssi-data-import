@@ -7,13 +7,14 @@ import io
 import json
 
 import openpyxl
+from odoo_yaml_test import YamlTransactionCase
 
 from odoo.exceptions import UserError
-from odoo.tests import SavepointCase, tagged
+from odoo.tests import tagged
 
 
 @tagged("post_install", "-at_install")
-class TestDataImportLoadData(SavepointCase):
+class TestDataImportLoadData(YamlTransactionCase):
     """Python-only scenarios for ``data_import.action_load_data``.
 
     P10/L-09..L-11: every scenario here needs an in-memory ``.xlsx``
@@ -23,18 +24,17 @@ class TestDataImportLoadData(SavepointCase):
     sandbox).
     """
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """Create a Template targeting ``res.partner`` as ``.xlsx``."""
-        super().setUpClass()
-        cls.partner_model = cls.env.ref("base.model_res_partner")
-        cls.Template = cls.env["data_import_template"]
-        cls.Document = cls.env["data_import"]
-        cls.template = cls.Template.create(
+        super().setUp()
+        self.partner_model = self.env.ref("base.model_res_partner")
+        self.Template = self.env["data_import_template"]
+        self.Document = self.env["data_import"]
+        self.template = self.Template.create(
             {
                 "name": "Load Data Template",
                 "code": "/",
-                "model_id": cls.partner_model.id,
+                "model_id": self.partner_model.id,
                 "file_format": "xlsx",
             }
         )
