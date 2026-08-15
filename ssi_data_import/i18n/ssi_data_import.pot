@@ -1863,6 +1863,18 @@ msgid "Viewer"
 msgstr ""
 
 #. module: ssi_data_import
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import__website_message_ids
+#: model:ir.model.fields,field_description:ssi_data_import.field_data_import_template__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: ssi_data_import
+#: model:ir.model.fields,help:ssi_data_import.field_data_import__website_message_ids
+#: model:ir.model.fields,help:ssi_data_import.field_data_import_template__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: ssi_data_import
 #: model:ir.model.fields.selection,name:ssi_data_import.selection__data_import_template__file_encoding__iso-8859-1
 msgid "Western (Latin-1 / ISO 8859-1)"
 msgstr ""
