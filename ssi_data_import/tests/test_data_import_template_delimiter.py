@@ -2,19 +2,20 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.tests import SavepointCase, tagged
+from odoo_yaml_test import YamlTransactionCase
+
+from odoo.tests import tagged
 
 
 @tagged("post_install", "-at_install")
-class TestDataImportTemplateDelimiter(SavepointCase):
+class TestDataImportTemplateDelimiter(YamlTransactionCase):
     """Test ``_get_delimiter_character`` return value for every choice."""
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """Create one template per ``delimiter`` selection value."""
-        super().setUpClass()
-        cls.partner_model = cls.env.ref("base.model_res_partner")
-        cls.Template = cls.env["data_import_template"]
+        super().setUp()
+        self.partner_model = self.env.ref("base.model_res_partner")
+        self.Template = self.env["data_import_template"]
 
     def _create_template(self, delimiter):
         """Create a template with the given ``delimiter`` value.

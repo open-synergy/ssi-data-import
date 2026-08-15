@@ -1,3 +1,6 @@
+options:
+  auto_refresh: true
+
 scenarios:
   - name: "Apply Writes Field And Completes Document"
     steps:
@@ -64,10 +67,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
         target: "document"
-        method: "invalidate_cache"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -75,10 +85,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert document reached Done"
         action: "assert"
         target: "document"
@@ -159,10 +165,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
         target: "document"
-        method: "invalidate_cache"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Simulate another process changing the target after Resolve"
         action: "write"
         target: "partner"
@@ -175,10 +188,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line moved to Stale"
         action: "assert"
         target: "line"
@@ -268,10 +277,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
         target: "document"
-        method: "invalidate_cache"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Approve (fan-out job runs synchronously, and fails)"
         action: "call"
         target: "document"
@@ -279,10 +295,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line moved to Error"
         action: "assert"
         target: "line"
@@ -384,10 +396,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
         target: "document"
-        method: "invalidate_cache"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Approve (fan-out job runs synchronously, and fails)"
         action: "call"
         target: "document"
@@ -395,10 +414,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert line moved to Error"
         action: "assert"
         target: "line"
@@ -465,10 +480,17 @@ scenarios:
         target: "document"
         method: "action_confirm"
         as_user: "base.user_admin"
-      - step: "Invalidate cache after confirm"
-        action: "call"
+      # WAJIB: memaksa _refresh() (flush + invalidate) sebelum approve_ok
+      # dibaca. Tanpa step ini approve_ok terbaca dari cache yang diisi
+      # action_confirm, saat approval.approval belum ada — nilainya False,
+      # dan approve gagal secara NONDETERMINISTIK (test-traps.md T-04).
+      - step: "Assert document confirmed (forces cache refresh before Approve)"
+        action: "assert"
         target: "document"
-        method: "invalidate_cache"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
       - step: "Approve (fan-out job runs synchronously)"
         action: "call"
         target: "document"
@@ -476,10 +498,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after approve"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert document reached Done"
         action: "assert"
         target: "document"
@@ -494,10 +512,6 @@ scenarios:
         as_user: "base.user_admin"
         context:
           queue_job__no_delay: true
-      - step: "Invalidate cache after cancel"
-        action: "call"
-        target: "document"
-        method: "invalidate_cache"
       - step: "Assert document reached Cancel"
         action: "assert"
         target: "document"

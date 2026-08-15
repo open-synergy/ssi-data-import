@@ -20,6 +20,6 @@
         id="menu_data_import_configuration"
         name="Configuration"
         parent="menu_root_data_import"
-        sequence="99"
+        sequence="999"
     />
 </odoo>
