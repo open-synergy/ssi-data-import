@@ -242,11 +242,23 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
                 in_modal: true,
             },
 
-            // Post-Condition — status changes to Waiting for Approval
+            // Post-Condition — status changes to Waiting for Approval.
+            // Gerbang (issue #11, 3rd mitigation): the previous two
+            // mitigations (split-class, pre-click statusbar wait_for) did
+            // not remove the race -- 6/6 CI runs still crashed inside
+            // FieldWrapper.updateModifiersValue. Comparing against
+            // ssi_hr_payroll's hr_payslip_approve_tour.js (never observed
+            // to hit this race) surfaced the actual missing guard: an
+            // extra_trigger on THIS assertion, taken right after the
+            // confirmation dialog closes. Without it, the tour engine
+            // starts polling for the new status immediately once the
+            // modal is gone, racing the form that is still mid-re-render
+            // from the action_confirm() RPC response.
             {
                 content: "Status is Waiting for Approval",
                 trigger:
                     ".o_statusbar_status .o_arrow_button[data-value='confirm'].btn-primary",
+                extra_trigger: "body:not(:has(.modal))",
                 run: function () {
                     // Assertion only; do not trigger the default click action.
                 },
@@ -348,10 +360,16 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             // Post-Condition — every approval level is fulfilled (only one
             // is configured), so status moves straight to Done: zero Data
             // lines means there is nothing for Apply to enqueue.
+            // Gerbang (issue #11, 3rd mitigation) -- see the confirm tour
+            // above for the full rationale: extra_trigger here waits for
+            // the confirmation dialog to be gone before polling the new
+            // status, avoiding the race against the still-re-rendering
+            // form.
             {
                 content: "Status is Done",
                 trigger:
                     ".o_statusbar_status .o_arrow_button[data-value='done'].btn-primary",
+                extra_trigger: "body:not(:has(.modal))",
                 run: function () {
                     // Assertion only; do not trigger the default click action.
                 },
@@ -475,10 +493,16 @@ odoo.define("ssi_data_import.data_import_tour", function (require) {
             // Post-Condition — status changes to Cancelled; the Done Data
             // line and the target record it wrote are not touched (not
             // observable from this tour -- see the Apply unit tests).
+            // Gerbang (issue #11, 3rd mitigation) -- see the confirm tour
+            // above for the full rationale. This tour stacks TWO modals
+            // (the cancellation-reason wizard, then its own confirmation
+            // dialog), so the guard is placed on the FINAL assertion only
+            // -- after BOTH have closed -- not on any step in between.
             {
                 content: "Status is Cancelled",
                 trigger:
                     ".o_statusbar_status .o_arrow_button[data-value='cancel'].btn-primary",
+                extra_trigger: "body:not(:has(.modal))",
                 run: function () {
                     // Assertion only; do not trigger the default click action.
                 },
