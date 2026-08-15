@@ -24,5 +24,5 @@ When this module is installed, the create form gains one optional field:
 
 - The Data Imports list is filtered by operating unit (record rule
   `data_import_rule_ou`). A user in group `data_import_ou_group` only sees data import
-  documents whose **Operating Unit** is one of the operating units assigned to them. This
-  is not a Flow step.
+  documents whose **Operating Unit** is one of the operating units assigned to them.
+  This is not a Flow step.
